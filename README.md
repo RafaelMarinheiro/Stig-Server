@@ -39,17 +39,20 @@ Em caso de sucesso, o servidor retornará uma resposta HTTP com código 200 (OK)
 
 ```
 {
+  "id": <ID-LOCAL>,
   "name": <NOME-DO-LOCAL>,
 	"img": <URL-DA-IMAGEM-DO-LOCAL>,
-	"description": <DESCRICAO>
+	"description": <DESCRICAO>,
 	"location": {
 					"lat": <LATITUDE>,
 					"lon": <LONGITUDE>
 				},
 	"friends": [<LISTA-ID-AMIGOS>],
-	"stickers": [ <LISTA-ID-STICKERS> ],
+	"stickers": {
+			<STICKER-ID>: <STICKER-RELEVANCE>,
+			...
+			} ,
 	"ranking": {
-					"distance": <RANKING-LOCALIZACAO>,
 					"social": <RANKING-SOCIAL>,
 					"buzz": <RANKING-MOVIMENTACAO>,
 					"overall": <RANKING-OVERALL>
@@ -72,15 +75,18 @@ Em caso de sucesso, o servidor retornará uma resposta HTTP com código 200 (OK)
 {
 	"places": [
 					{
+						"id": <ID-LOCAL>,
 						"name": <NOME-DO-LOCAL>,
 						"location": {
 										"lat": <LATITUDE>,
 										"lon": <LONGITUDE>
 									},
 						"friends": [<LISTA-ID-AMIGOS>],
-						"stickers": [ <LISTA-ID-STICKERS> ],
+						"stickers": {
+								<STICKER-ID>: <STICKER-RELEVANCE>,
+								...
+								} ,
 						"ranking": {
-										"distance": <RANKING-LOCALIZACAO>,
 										"social": <RANKING-SOCIAL>,
 										"buzz": <RANKING-MOVIMENTACAO>,
 										"overall": <RANKING-OVERALL>
@@ -90,7 +96,7 @@ Em caso de sucesso, o servidor retornará uma resposta HTTP com código 200 (OK)
 				],
 	"pagination": {
 					"prev": <PAGE-NO-PREV>,
-					"next": <PAGE-NO-PREV>
+					"next": <PAGE-NO-NEXT>
 				  }
 }
 ```
@@ -115,6 +121,8 @@ Em caso de sucesso, o servidor retornará uma resposta HTTP com código 200 (OK)
 
 ```
 {
+	"id": <ID-COMENTARIO>,
+	"place_id": <ID-LOCAL>,
 	"user_id": <ID-USUARIO>,
 	"text": <TEXTO-COMENTARIO>,
 	"stickers": <LISTA-ID-STICKERS>,
@@ -140,6 +148,7 @@ Em caso de sucesso, o servidor retornará uma resposta HTTP com código 200 (OK)
 					{
 						"id": <ID-COMENTARIO>,
 						"user_id": <ID-USUARIO>,
+						"place_id": <ID-LOCAL>,
 						"text": <TEXTO-COMENTARIO>,
 						"stickers": <LISTA-ID-STICKERS>,
 						"timestamp": <TIMESTAMP-DA-MENSAGEM>
@@ -148,7 +157,7 @@ Em caso de sucesso, o servidor retornará uma resposta HTTP com código 200 (OK)
 				],
 	"pagination": {
 					"prev": <PAGE-NO-PREV>,
-					"next": <PAGE-NO-PREV>
+					"next": <PAGE-NO-NEXT>
 				  }
 }
 ```
@@ -163,7 +172,7 @@ Caso o local especificado não exista, ou caso não exista comentários na pági
 
 Para acessar os replies de um comentário, deve-se fazer uma requisição GET:
 ```
-GET https://api.stig.com/places/<ID-LOCAL>/comments/reply[?page=<PAGE-NO>]
+GET https://api.stig.com/places/<ID-LOCAL>/comments/reply[?page=<PAGE-NO>&filter=<LISTA-ID-STICKERS>]
 ```
 
 Em caso de sucesso, o servidor retornará uma resposta HTTP com código 200 (OK) retornando um JSON no seguinte formato:
@@ -174,6 +183,7 @@ Em caso de sucesso, o servidor retornará uma resposta HTTP com código 200 (OK)
 					{
 						"id": <ID-COMENTARIO>,
 						"user_id": <ID-USUARIO>,
+						"place_id": <ID-LOCAL>,
 						"text": <TEXTO-COMENTARIO>,
 						"stickers": <LISTA-ID-STICKERS>,
 						"timestamp": <TIMESTAMP-DA-MENSAGEM>
@@ -182,7 +192,7 @@ Em caso de sucesso, o servidor retornará uma resposta HTTP com código 200 (OK)
 				],
 	"pagination": {
 					"prev": <PAGE-NO-PREV>,
-					"next": <PAGE-NO-PREV>
+					"next": <PAGE-NO-NEXT>
 				  }
 }
 ```
@@ -206,6 +216,7 @@ Em caso de sucesso, o servidor retornará uma resposta HTTP com código 200 (OK)
 
 ```
 {
+	"id": <ID-USER>,
 	"name": <NOME-DO-USUÁRIO>,
 	"img": <URL-DA-IMAGEM-DO-USUÁRIO>,
 	"location": {
@@ -222,7 +233,7 @@ Caso não exista um usuário com o ID especificado, será retornada uma resposta
 
 Para acessar o histório de check-in de um usuário, deve-se fazer uma requisição GET:
 ```
-GET https://api.stig.com/users/<ID-USER>/story[?page=<PAGE-NO>]
+GET https://api.stig.com/users/<ID-USER>/checkin[?page=<PAGE-NO>]
 ```
 
 Em caso de sucesso, o servidor retornará uma resposta HTTP com código 200 (OK) retornando um JSON no seguinte formato:
@@ -238,7 +249,7 @@ Em caso de sucesso, o servidor retornará uma resposta HTTP com código 200 (OK)
 				],
 	"pagination": {
 					"prev": <PAGE-NO-PREV>,
-					"next": <PAGE-NO-PREV>
+					"next": <PAGE-NO-NEXT>
 				  }
 }
 ```
@@ -271,7 +282,31 @@ POST https://api.stig.com/places
 }
 ```
 
-Em caso de sucesso, será retornada uma resposta HTTP 201 (CREATED). Caso o usuário não tenha as permissões adequadas, será retornada uma resposta HTTP com código 403 (UNAUTHORIZED).
+Em caso de sucesso, será retornada uma resposta HTTP 201 (CREATED) com o seguinte JSON:
+```
+{
+  "id": <ID-LOCAL>,
+  "name": <NOME-DO-LOCAL>,
+	"img": <URL-DA-IMAGEM-DO-LOCAL>,
+	"description": <DESCRICAO>,
+	"location": {
+					"lat": <LATITUDE>,
+					"lon": <LONGITUDE>
+				},
+	"friends": [<LISTA-ID-AMIGOS>],
+	"stickers": {
+			<STICKER-ID>: <STICKER-RELEVANCE>,
+			...
+			} ,
+	"ranking": {
+					"social": <RANKING-SOCIAL>,
+					"buzz": <RANKING-MOVIMENTACAO>,
+					"overall": <RANKING-OVERALL>
+				}	
+}
+```
+
+Caso o usuário não tenha as permissões adequadas, será retornada uma resposta HTTP com código 403 (UNAUTHORIZED).
 
 #### Fazer check-in
 
@@ -312,13 +347,25 @@ POST https://api.stig.com/places/<PLACE-ID>/comments
 }
 ```
 
-Em caso de sucesso, será retornada uma resposta HTTP 201 (CREATED). Caso o usuário não tenha as permissões adequadas, será retornada uma resposta HTTP com código 403 (UNAUTHORIZED). Caso o local não exista, será retornada uma mensagem HTTP com código 404 (NOT FOUND).
+Em caso de sucesso, será retornada uma resposta HTTP 201 (CREATED). com o seguinte JSON:
+```
+{
+	"id": <ID-COMENTARIO>,
+	"place_id": <ID-LOCAL>,
+	"user_id": <ID-USUARIO>,
+	"text": <TEXTO-COMENTARIO>,
+	"stickers": <LISTA-ID-STICKERS>,
+	"timestamp": <TIMESTAMP-DA-MENSAGEM>,
+	"reply": null
+}
+```
+Caso o usuário não tenha as permissões adequadas, será retornada uma resposta HTTP com código 403 (UNAUTHORIZED). Caso o local não exista, será retornada uma mensagem HTTP com código 404 (NOT FOUND).
 
 #### Adicionar reply à um comentário
 
 Para adicionar um reply à um comentário, deve-se fazer uma requisição POST:
 ```
-POST https://api.stig.com/places/<PLACE-ID>/comments/<COMMENT-ID>
+POST https://api.stig.com/places/<PLACE-ID>/comments/<COMMENT-ID>/reply
 
 {
 	"text": <TEXTO-COMENTARIO>,
@@ -326,7 +373,19 @@ POST https://api.stig.com/places/<PLACE-ID>/comments/<COMMENT-ID>
 }
 ```
 
-Em caso de sucesso, será retornada uma resposta HTTP 201 (CREATED). Caso o usuário não tenha as permissões adequadas, será retornada uma resposta HTTP com código 403 (UNAUTHORIZED). Caso o local não exista, ou o comentário não exista, será retornada uma mensagem HTTP com código 404 (NOT FOUND).
+Em caso de sucesso, será retornada uma resposta HTTP 201 (CREATED) com o seguinte JSON:
+```
+{
+	"id": <ID-COMENTARIO>,
+	"place_id": <ID-LOCAL>,
+	"user_id": <ID-USUARIO>,
+	"text": <TEXTO-COMENTARIO>,
+	"stickers": <LISTA-ID-STICKERS>,
+	"timestamp": <TIMESTAMP-DA-MENSAGEM>,
+	"reply": <ID-MENSAGEM-REPLY>
+}
+```
+Caso o usuário não tenha as permissões adequadas, será retornada uma resposta HTTP com código 403 (UNAUTHORIZED). Caso o local não exista, ou o comentário não exista, será retornada uma mensagem HTTP com código 404 (NOT FOUND).
  
 Dúvidas? Sugestões?
 ========
