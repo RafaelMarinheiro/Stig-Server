@@ -1,0 +1,6 @@
+venv/
+staticfiles/
+*.pyc
+*.pyo
+*.db
+*.DS_Store
