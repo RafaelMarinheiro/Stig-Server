@@ -4,14 +4,19 @@ from django.conf.urls import patterns, include, url
 from django.contrib import admin
 admin.autodiscover()
 
+# API
+from tastypie.api import Api
+from stigserver.apps.stig.api import StigUserResource, PlaceResource, StickerResource, CommentResource
+v1_api = Api(api_name='v1')
+v1_api.register(StigUserResource())
+v1_api.register(PlaceResource())
+v1_api.register(StickerResource())
+v1_api.register(CommentResource())
+
+
+# URLS
+
 urlpatterns = patterns('',
-    # Examples:
-    # url(r'^$', 'stigserver.views.home', name='home'),
-    # url(r'^stigserver/', include('stigserver.foo.urls')),
-
-    # Uncomment the admin/doc line below to enable admin documentation:
-    # url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
-
-    # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
+    (r'^api/', include(v1_api.urls)),
 )

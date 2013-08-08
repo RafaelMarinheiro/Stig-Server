@@ -8,7 +8,7 @@ class StigUser(models.Model):
 	fb_id = models.CharField(max_length=20)
 
 	def __unicode__(self):
-		return "%s %s" (self.first_name, self.last_name)
+		return "%s %s" % (self.first_name, self.last_name)
 
 
 class Place(models.Model):
@@ -34,4 +34,7 @@ class Comment(models.Model):
 	content = models.TextField()
 	stickers = models.ManyToManyField(Sticker)
 	created_on = models.DateTimeField(auto_now_add=True)
-	parent = models.ForeignKey('Comment')
+	parent = models.ForeignKey('Comment', null=True, blank=True)
+
+	def __unicode__(self):
+		return "Comment for %s by %s" % (self.place, self.user)
