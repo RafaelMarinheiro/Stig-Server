@@ -1,1 +1,1 @@
-web: gunicorn stigserver.wsgi
+web: gunicorn stigserver.wsgi --settings "stigserver.settings.settings"
