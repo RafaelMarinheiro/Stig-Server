@@ -1,4 +1,4 @@
-from django.db import models
+from django.contrib.gis.db import models
 
 # Create your models here.
 class StigUser(models.Model):
@@ -15,6 +15,9 @@ class Place(models.Model):
 	name = models.CharField(max_length=100)
 	image = models.URLField()
 	description = models.TextField()
+	geolocation = models.PointField(null=True, blank=True)
+
+	objects = models.GeoManager()
 
 	def __unicode__(self):
 		return self.name

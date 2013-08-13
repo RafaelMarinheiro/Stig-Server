@@ -4,3 +4,4 @@ staticfiles/
 *.pyo
 *.db
 *.DS_Store
+.elasticbeanstalk/
