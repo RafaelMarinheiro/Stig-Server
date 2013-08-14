@@ -121,7 +121,8 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.gis',
-    'tastypie',
+    # 'tastypie',
+    'rest_framework',
     'south',
     'stigserver.apps.stig',
     # Uncomment the next line to enable the admin:
@@ -168,3 +169,20 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
+
+
+# REST API
+REST_FRAMEWORK = {
+    # Use hyperlinked styles by default.
+    # Only used if the `serializer_class` attribute is not set on a view.
+    'DEFAULT_MODEL_SERIALIZER_CLASS':
+        'rest_framework.serializers.HyperlinkedModelSerializer',
+
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ],
+
+    'PAGINATE_BY': 10,
+}

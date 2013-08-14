@@ -40,4 +40,4 @@ class Comment(models.Model):
 	parent = models.ForeignKey('Comment', null=True, blank=True)
 
 	def __unicode__(self):
-		return "Comment for %s by %s" % (self.place, self.user)
+		return "Comment #%d for %s by %s" % (self.pk, self.place, self.user)
