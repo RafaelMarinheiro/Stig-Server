@@ -9,7 +9,7 @@ class StigUser(models.Model):
 	fb_id = models.CharField(max_length=20)
 
 	def __unicode__(self):
-		return "%s %s" % (self.first_name, self.last_name)
+		return u"%s %s" % (self.first_name, self.last_name)
 
 	def get_place(self):
 		try:
@@ -28,7 +28,7 @@ class Place(models.Model):
 	objects = models.GeoManager()
 
 	def __unicode__(self):
-		return self.name
+		return u"%s" % self.name
 
 	def get_sticker_relevance(self):
 		stickers = Sticker.objects.all()
@@ -66,7 +66,7 @@ class PlaceSticker(models.Model):
 	comment = models.ForeignKey('Comment', null=True)
 
 	def __unicode__(self):
-		return "Sticker %s for Comment #%d (mod: %d)" % (self.sticker, self.comment.pk, self.modifier)
+		return u"Sticker %s for Comment #%d (mod: %d)" % (self.sticker, self.comment.pk, self.modifier)
 
 
 class Comment(models.Model):
@@ -77,7 +77,7 @@ class Comment(models.Model):
 	parent = models.ForeignKey('Comment', null=True, blank=True)
 
 	def __unicode__(self):
-		return "Comment #%d for %s by %s" % (self.pk, self.place, self.user)
+		return u"Comment #%d for %s by %s" % (self.pk, self.place, self.user)
 
 
 class Checkin(models.Model):
@@ -86,4 +86,4 @@ class Checkin(models.Model):
 	timestamp = models.DateTimeField(auto_now_add=True)
 
 	def __unicode__(self):
-		return "Checkin at %s by %s on %s" % (self.place, self.user, self.timestamp)
+		return u"Checkin at %s by %s on %s" % (self.place, self.user, self.timestamp)
