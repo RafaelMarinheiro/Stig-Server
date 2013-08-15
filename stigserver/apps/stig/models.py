@@ -63,10 +63,10 @@ class PlaceSticker(models.Model):
 
 	sticker = models.ForeignKey(Sticker)
 	modifier = models.IntegerField(choices=MODIFIER_CHOICES)
-	comment = models.ForeignKey('Comment', null=True)
+	comment = models.ForeignKey('Comment')
 
 	def __unicode__(self):
-		return u"Sticker %s for Comment #%d (mod: %d)" % (self.sticker, self.comment.pk, self.modifier)
+		return u"Sticker %s (mod: %d)" % (self.sticker, self.modifier)
 
 
 class Comment(models.Model):
@@ -75,38 +75,70 @@ class Comment(models.Model):
 	content = models.TextField()
 	created_on = models.DateTimeField(auto_now_add=True)
 	parent = models.ForeignKey('Comment', null=True, blank=True)
+	stickers_to_save = []
+	
+
+	sticker_infos = [
+		(1, 0), # Money
+		(2, 2), # Food
+		(3, 4), # Queue
+		(4, 6), # Music
+		(5, 8), # Accessibility
+		(6, 10), # People
+	]
+
+	modifier_infos = [
+		1, # int("01", 2),
+		3, # int("11", 2),
+		2, # int("10", 2),
+	]
 
 	def __unicode__(self):
 		return u"Comment #%d for %s by %s" % (self.pk, self.place, self.user)
 
-	def get_encoded_stickers(self):
-		sticker_infos = [
-			(1, 0), # Money
-			(2, 2), # Food
-			(3, 4), # Queue
-			(4, 6), # Music
-			(5, 8), # Accessibility
-			(6, 10), # People
-		]
-
-		modifier_infos = [
-			1, # int("01", 2),
-			3, # int("11", 2),
-			2, # int("10", 2),
-		]
-
+	def get_stickers(self):
 		result = 0
 
 		placestickers = PlaceSticker.objects.filter(comment=self)
 
-		for sticker_info in sticker_infos:
+		for sticker_info in self.sticker_infos:
 			try:
 				placesticker = placestickers.get(sticker_id=sticker_info[0])
-				result = result | modifier_infos[placesticker.modifier] << sticker_info[1]
+				result = result | self.modifier_infos[placesticker.modifier] << sticker_info[1]
 			except:
 				pass
 
 		return result
+
+	def set_stickers(self, data):
+		# PlaceSticker.objects.filter(comment=self).delete()
+		self.stickers_to_save = []
+
+		for sticker_info in self.sticker_infos:
+			modifier_encoded = (data & (3 << sticker_info[1])) >> sticker_info[1]
+			if modifier_encoded > 0:
+				if modifier_encoded == 1:
+					modifier = 0
+				elif modifier_encoded == 2:
+					modifier = 2
+				else:
+					modifier = 1
+
+				placesticker = PlaceSticker(sticker_id=sticker_info[0], modifier=modifier)
+				self.stickers_to_save.append(placesticker)
+				# raise Exception(placesticker)
+
+
+	stickers = property(get_stickers, set_stickers)
+
+	def save(self, *args, **kwargs):
+		super(Comment, self).save(*args, **kwargs)
+
+		if (len(self.stickers_to_save) > 0):
+			PlaceSticker.objects.filter(comment_id=self.id).delete()
+			for sticker in self.stickers_to_save:
+				sticker.comment_id = self.id
+				sticker.save()
 
 
 class Checkin(models.Model):
@@ -116,3 +148,7 @@ class Checkin(models.Model):
 
 	def __unicode__(self):
 		return u"Checkin at %s by %s on %s" % (self.place, self.user, self.timestamp)
+
+
+
+

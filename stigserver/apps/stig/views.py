@@ -27,6 +27,10 @@ class CommentsForPlace(generics.ListCreateAPIView):
 	serializer_class = CommentSerializer
 
 	def get_queryset(self):
+		before = self.request.QUERY_PARAMS.get('before', None)
+		if before:
+			self.queryset = self.queryset.filter(timestamp__lte=before)
+
 		place_pk = self.kwargs['place_pk']
 		try:
 			Place.objects.get(pk=place_pk)

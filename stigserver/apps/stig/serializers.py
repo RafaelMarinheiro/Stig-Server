@@ -13,6 +13,7 @@ class GeoPointField(serializers.WritableField):
 			data = dict(data)
 		return Point(data['lat'], data['lon'])
 
+
 class UserSerializer(serializers.ModelSerializer):
 	place = serializers.Field(source='get_place')
 
@@ -22,9 +23,10 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-	stickers = serializers.Field(source='get_encoded_stickers')
+	stickers = serializers.IntegerField(source='stickers')
 	class Meta:
 		model = Comment
+
 
 class PlaceSerializer(serializers.ModelSerializer):
 	stickers = serializers.Field(source='get_sticker_relevance')
