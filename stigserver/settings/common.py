@@ -124,6 +124,7 @@ INSTALLED_APPS = (
     # 'tastypie',
     'rest_framework',
     'south',
+    'django_facebook',
     'stigserver.apps.stig',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
@@ -160,6 +161,23 @@ LOGGING = {
     }
 }
 
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.contrib.auth.context_processors.auth',
+    'django.core.context_processors.debug',
+    'django.core.context_processors.i18n',
+    'django.core.context_processors.media',
+    'django.core.context_processors.static',
+    'django.core.context_processors.tz',
+    'django.core.context_processors.request',
+    'django.contrib.messages.context_processors.messages',
+    'django_facebook.context_processors.facebook',
+)
+
+AUTHENTICATION_BACKENDS = (
+    'django_facebook.auth_backends.FacebookBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
 # Static asset configuration
 import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -186,3 +204,7 @@ REST_FRAMEWORK = {
 
     'PAGINATE_BY': 10,
 }
+
+# Facebook
+FACEBOOK_APP_ID =  '433856753394803'
+FACEBOOK_APP_SECRET = '2a2647167334e0326abab9124dd063d2'

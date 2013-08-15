@@ -1,12 +1,15 @@
 from django.contrib.gis.db import models
 from django.db.models import Avg
+from open_facebook.api import OpenFacebook
+from rest_framework.exceptions import PermissionDenied
 
 # Create your models here.
 class StigUser(models.Model):
 	first_name = models.CharField(max_length=50)
 	last_name = models.CharField(max_length=50)
 	avatar = models.URLField()
-	fb_id = models.CharField(max_length=20)
+	fb_id = models.CharField(max_length=20, unique=True)
+	_access_token = ''
 
 	def __unicode__(self):
 		return u"%s %s" % (self.first_name, self.last_name)
@@ -17,6 +20,25 @@ class StigUser(models.Model):
 			return last_checkin.place.pk
 		except IndexError:
 			return None
+
+	def get_access_token(self):
+		return self._access_token
+
+	def set_access_token(self, value):
+		self._access_token = value
+
+	access_token = property(get_access_token, set_access_token)
+
+	def save(self, *args, **kwargs):
+		try:
+			graph = OpenFacebook(self.access_token)
+			me = graph.get('me')
+			self.first_name = me['first_name']
+			self.last_name = me['last_name']
+			self.avatar = 'https://graph.facebook.com/%s/picture?type=large' % me['id']
+			super(StigUser, self).save(*args, **kwargs)
+		except Exception, e:
+			raise PermissionDenied
 
 
 class Place(models.Model):

@@ -16,10 +16,14 @@ class GeoPointField(serializers.WritableField):
 
 class UserSerializer(serializers.ModelSerializer):
 	place = serializers.Field(source='get_place')
+	first_name = serializers.CharField(read_only=True)
+	last_name = serializers.CharField(read_only=True)
+	avatar = serializers.CharField(read_only=True)
+	access_token = serializers.CharField(source='access_token')
 
 	class Meta:
 		model = StigUser
-		fields = ('id', 'fb_id', 'first_name', 'last_name', 'avatar', 'place')
+		fields = ('id', 'fb_id', 'first_name', 'last_name', 'avatar', 'place', 'access_token')
 
 
 class CommentSerializer(serializers.ModelSerializer):
