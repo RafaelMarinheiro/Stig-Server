@@ -36,4 +36,4 @@ class PlaceSerializer(serializers.ModelSerializer):
 class CheckinSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Checkin
-		fields = ('id', 'place', 'timestamp')
+		fields = ('place', 'timestamp') # No ID.
