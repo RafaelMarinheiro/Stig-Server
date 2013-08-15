@@ -34,6 +34,9 @@ class CommentsForPlace(generics.ListCreateAPIView):
 			raise Http404
 		return self.queryset.filter(place__pk=place_pk)
 
+	def pre_save(self, obj):
+		obj.place_id = self.kwargs['place_pk']
+
 
 class RepliesForComment(generics.ListCreateAPIView):
 	queryset = Comment.objects.all()
@@ -56,3 +59,6 @@ class CheckinsForUser(generics.ListCreateAPIView):
 	def get_queryset(self):
 		user_pk = self.kwargs['user_pk']
 		return self.queryset.filter(user__pk=user_pk)
+
+	def pre_save(self, obj):
+		obj.user_id = self.kwargs['user_pk']
