@@ -1,5 +1,6 @@
 from models import StigUser, Place, Sticker, Comment, Checkin
 from rest_framework import serializers
+from rest_framework.parsers import JSONParser
 from rest_framework.reverse import reverse
 from django.contrib.gis.geos import Point
 
@@ -8,7 +9,8 @@ class GeoPointField(serializers.WritableField):
 		return {'lat': obj.x, 'lon': obj.y}
 
 	def from_native(self, data):
-		# raise Exception(data)
+		if type(data) != dict:
+			data = dict(data)
 		return Point(data['lat'], data['lon'])
 
 class UserSerializer(serializers.ModelSerializer):
@@ -20,6 +22,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
+	stickers = serializers.Field(source='get_encoded_stickers')
 	class Meta:
 		model = Comment
 

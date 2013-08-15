@@ -79,6 +79,35 @@ class Comment(models.Model):
 	def __unicode__(self):
 		return u"Comment #%d for %s by %s" % (self.pk, self.place, self.user)
 
+	def get_encoded_stickers(self):
+		sticker_infos = [
+			(1, 0), # Money
+			(2, 2), # Food
+			(3, 4), # Queue
+			(4, 6), # Music
+			(5, 8), # Accessibility
+			(6, 10), # People
+		]
+
+		modifier_infos = [
+			1, # int("01", 2),
+			3, # int("11", 2),
+			2, # int("10", 2),
+		]
+
+		result = 0
+
+		placestickers = PlaceSticker.objects.filter(comment=self)
+
+		for sticker_info in sticker_infos:
+			try:
+				placesticker = placestickers.get(sticker_id=sticker_info[0])
+				result = result | modifier_infos[placesticker.modifier] << sticker_info[1]
+			except:
+				pass
+
+		return result
+
 
 class Checkin(models.Model):
 	place = models.ForeignKey(Place)
