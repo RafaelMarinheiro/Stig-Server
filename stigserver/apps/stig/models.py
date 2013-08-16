@@ -32,7 +32,7 @@ class StigUser(models.Model):
 	def save(self, *args, **kwargs):
 		try:
 			graph = OpenFacebook(self.access_token)
-			me = graph.get('me')
+			me = graph.get('me', fields='id,first_name,last_name')
 			self.first_name = me['first_name']
 			self.last_name = me['last_name']
 			self.avatar = 'https://graph.facebook.com/%s/picture?type=large' % me['id']
@@ -57,8 +57,9 @@ class Place(models.Model):
 		result = {}
 		for sticker in stickers:
 			avg = PlaceSticker.objects.filter(sticker=sticker, comment__place=self).aggregate(modifier_avg=Avg('modifier'))['modifier_avg']
-			if avg:
-				result[sticker.id] = avg
+			if avg is not None:
+				name_encoded = sticker.name.lower()
+				result[name_encoded] = avg
 		return result
 
 	def get_ranking(self):
@@ -67,16 +68,15 @@ class Place(models.Model):
 
 class Sticker(models.Model):
 	name = models.CharField(max_length=50)
-	image = models.URLField()
 
 	def __unicode__(self):
 		return self.name
 
 
 class PlaceSticker(models.Model):
-	MODIFIER_BAD = 0
-	MODIFIER_NEUTRAL = 1
-	MODIFIER_GOOD = 2
+	MODIFIER_BAD = -1
+	MODIFIER_NEUTRAL = 0
+	MODIFIER_GOOD = 1
 	MODIFIER_CHOICES = (
 		(MODIFIER_BAD, 'Bad'),
 		(MODIFIER_NEUTRAL, 'Neutral'),
@@ -109,11 +109,11 @@ class Comment(models.Model):
 		(6, 10), # People
 	]
 
-	modifier_infos = [
-		1, # int("01", 2),
-		3, # int("11", 2),
-		2, # int("10", 2),
-	]
+	modifier_infos = {
+		-1: 1, # int("01", 2),
+		0: 3, # int("11", 2),
+		1: 2, # int("10", 2),
+	}
 
 	def __unicode__(self):
 		return u"Comment #%d for %s by %s" % (self.pk, self.place, self.user)
@@ -140,11 +140,11 @@ class Comment(models.Model):
 			modifier_encoded = (data & (3 << sticker_info[1])) >> sticker_info[1]
 			if modifier_encoded > 0:
 				if modifier_encoded == 1:
-					modifier = 0
+					modifier = PlaceSticker.MODIFIER_BAD
 				elif modifier_encoded == 2:
-					modifier = 2
+					modifier = PlaceSticker.MODIFIER_GOOD
 				else:
-					modifier = 1
+					modifier = PlaceSticker.MODIFIER_NEUTRAL
 
 				placesticker = PlaceSticker(sticker_id=sticker_info[0], modifier=modifier)
 				self.stickers_to_save.append(placesticker)
