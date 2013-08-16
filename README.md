@@ -39,19 +39,19 @@ Em caso de sucesso, o servidor retornará uma resposta HTTP com código 200 (OK)
 
 ```
 {
-  "id": <ID-LOCAL>,
-  "name": <NOME-DO-LOCAL>,
-	"img": <URL-DA-IMAGEM-DO-LOCAL>,
+	"id": <ID-LOCAL>,
+	"name": <NOME-DO-LOCAL>,
+	"image": <URL-DA-IMAGEM-DO-LOCAL>,
 	"description": <DESCRICAO>,
 	"location": {
 					"lat": <LATITUDE>,
 					"lon": <LONGITUDE>
 				},
 	"friends": [<LISTA-ID-AMIGOS>],
-	"stickers": {
+	"stickers": [
 			<STICKER-ID>: <STICKER-RELEVANCE>,
 			...
-			} ,
+			] ,
 	"ranking": {
 					"social": <RANKING-SOCIAL>,
 					"buzz": <RANKING-MOVIMENTACAO>,
@@ -73,10 +73,12 @@ Em caso de sucesso, o servidor retornará uma resposta HTTP com código 200 (OK)
 
 ```
 {
-	"places": [
+	"results": [
 					{
 						"id": <ID-LOCAL>,
 						"name": <NOME-DO-LOCAL>,
+						"image": <URL-DA-IMAGEM-DO-LOCAL>,
+						"description": <DESCRICAO>,
 						"location": {
 										"lat": <LATITUDE>,
 										"lon": <LONGITUDE>
@@ -94,10 +96,9 @@ Em caso de sucesso, o servidor retornará uma resposta HTTP com código 200 (OK)
 					},
 					...
 				],
-	"pagination": {
-					"prev": <PAGE-NO-PREV>,
-					"next": <PAGE-NO-NEXT>
-				  }
+	"count": <TOTAL-LOCAIS>,
+	"next": <LINK-PROX-PAGINA>,
+	"previous": <LINK-ANT-PAGINA>,
 }
 ```
 
@@ -122,12 +123,12 @@ Em caso de sucesso, o servidor retornará uma resposta HTTP com código 200 (OK)
 ```
 {
 	"id": <ID-COMENTARIO>,
-	"place_id": <ID-LOCAL>,
-	"user_id": <ID-USUARIO>,
-	"text": <TEXTO-COMENTARIO>,
-	"stickers": <LISTA-ID-STICKERS>,
+	"place": <ID-LOCAL>,
+	"user": <ID-USUARIO>,
+	"content": <TEXTO-COMENTARIO>,
+	"stickers": <LISTA-ID-STICKERS-CODIFICADA>,
 	"timestamp": <TIMESTAMP-DA-MENSAGEM>,
-	"reply": <ID-MENSAGEM-REPLY>
+	"parent": <ID-MENSAGEM-REPLY>
 }
 ```
 
@@ -147,18 +148,17 @@ Em caso de sucesso, o servidor retornará uma resposta HTTP com código 200 (OK)
 	"comments": [
 					{
 						"id": <ID-COMENTARIO>,
-						"user_id": <ID-USUARIO>,
-						"place_id": <ID-LOCAL>,
+						"user": <ID-USUARIO>,
+						"place": <ID-LOCAL>,
 						"text": <TEXTO-COMENTARIO>,
-						"stickers": <LISTA-ID-STICKERS>,
+						"stickers": <LISTA-ID-STICKERS-CODIFICADA>,
 						"timestamp": <TIMESTAMP-DA-MENSAGEM>
 					},
 					...
 				],
-	"pagination": {
-					"prev": <PAGE-NO-PREV>,
-					"next": <PAGE-NO-NEXT>
-				  }
+	"count": <TOTAL-COMENTARIOS>,
+	"next": <LINK-PROX-PAGINA>,
+	"previous": <LINK-ANT-PAGINA>,
 }
 ```
 
@@ -190,10 +190,9 @@ Em caso de sucesso, o servidor retornará uma resposta HTTP com código 200 (OK)
 					},
 					...
 				],
-	"pagination": {
-					"prev": <PAGE-NO-PREV>,
-					"next": <PAGE-NO-NEXT>
-				  }
+	"count": <TOTAL-COMENTARIOS>,
+	"next": <LINK-PROX-PAGINA>,
+	"previous": <LINK-ANT-PAGINA>,
 }
 ```
 
@@ -247,10 +246,9 @@ Em caso de sucesso, o servidor retornará uma resposta HTTP com código 200 (OK)
 					},
 					...
 				],
-	"pagination": {
-					"prev": <PAGE-NO-PREV>,
-					"next": <PAGE-NO-NEXT>
-				  }
+	"count": <TOTAL-LOCAIS>,
+	"next": <LINK-PROX-PAGINA>,
+	"previous": <LINK-ANT-PAGINA>,
 }
 ```
 
