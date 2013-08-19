@@ -43,15 +43,19 @@ class StigUser(models.Model):
 
 	def save(self, *args, **kwargs):
 		try:
+			is_first = False
 			if self.access_token and self.pk is None:
+				is_first = True
 				graph = OpenFacebook(self.access_token)
 				me = graph.get('me', fields='id,first_name,last_name')
 				self.first_name = me['first_name']
 				self.last_name = me['last_name']
 				self.avatar = 'https://graph.facebook.com/%s/picture?type=large' % me['id']
 
-				self.update_friendships()
 			super(StigUser, self).save(*args, **kwargs)
+			if is_first:
+				self.update_friendships()
+				self.save()
 		except Exception, e:
 			raise PermissionDenied
 
