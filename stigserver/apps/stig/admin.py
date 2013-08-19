@@ -13,9 +13,10 @@ class FriendshipInline(admin.TabularInline):
     extra = 1
 
 class StigUserAdmin(admin.ModelAdmin):
-	inlines = (FriendshipInline, )
+	# inlines = (FriendshipInline, )
+	filter_horizontal = ('friends', )
 
-admin.site.register(StigUser)
+admin.site.register(StigUser, StigUserAdmin)
 admin.site.register(Place, admin.OSMGeoAdmin)
 admin.site.register(Sticker)
 admin.site.register(Comment, CommentAdmin)
