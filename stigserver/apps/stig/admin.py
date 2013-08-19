@@ -8,6 +8,13 @@ class PlaceStickerInline(admin.TabularInline):
 class CommentAdmin(admin.ModelAdmin):
 	inlines = (PlaceStickerInline, )
 
+class FriendshipInline(admin.TabularInline):
+    model = StigUser
+    extra = 1
+
+class StigUserAdmin(admin.ModelAdmin):
+	inlines = (FriendshipInline, )
+
 admin.site.register(StigUser)
 admin.site.register(Place, admin.OSMGeoAdmin)
 admin.site.register(Sticker)

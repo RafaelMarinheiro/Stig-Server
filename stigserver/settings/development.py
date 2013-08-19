@@ -8,3 +8,10 @@ DATABASES = {
          'HOST': 'localhost',   
      }
 }
+
+ROOT_URLCONF = 'stigserver.urls.local'
+
+# A dictionary of urlconf module paths, keyed by their subdomain.
+SUBDOMAIN_URLCONFS = {
+    None: 'stigserver.urls.local',  # no subdomain, e.g. ``example.com``
+}

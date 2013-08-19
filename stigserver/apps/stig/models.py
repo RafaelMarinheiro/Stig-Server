@@ -9,6 +9,7 @@ class StigUser(models.Model):
 	last_name = models.CharField(max_length=50)
 	avatar = models.URLField()
 	fb_id = models.CharField(max_length=20, unique=True)
+	friends = models.ManyToManyField('self')
 	_access_token = ''
 
 	def __unicode__(self):
@@ -29,13 +30,27 @@ class StigUser(models.Model):
 
 	access_token = property(get_access_token, set_access_token)
 
+	def update_friendships(self):
+		graph = OpenFacebook(self.access_token)
+		friends_request = graph.get('me', fields='friends')
+		friends_list = friends_request['friends']['data']
+		for friend in friends_list:
+			try:
+				user = StigUser.objects.get(fb_id=friend['id'])
+				self.friends.add(user)
+			except StigUser.DoesNotExist, e:
+				pass # User not yet in Stig
+
 	def save(self, *args, **kwargs):
 		try:
-			graph = OpenFacebook(self.access_token)
-			me = graph.get('me', fields='id,first_name,last_name')
-			self.first_name = me['first_name']
-			self.last_name = me['last_name']
-			self.avatar = 'https://graph.facebook.com/%s/picture?type=large' % me['id']
+			if self.access_token and self.pk is None:
+				graph = OpenFacebook(self.access_token)
+				me = graph.get('me', fields='id,first_name,last_name')
+				self.first_name = me['first_name']
+				self.last_name = me['last_name']
+				self.avatar = 'https://graph.facebook.com/%s/picture?type=large' % me['id']
+
+				self.update_friendships()
 			super(StigUser, self).save(*args, **kwargs)
 		except Exception, e:
 			raise PermissionDenied
@@ -166,7 +181,7 @@ class Comment(models.Model):
 class Checkin(models.Model):
 	place = models.ForeignKey(Place)
 	user = models.ForeignKey(StigUser)
-	timestamp = models.DateTimeField(auto_now_add=True)
+	timestamp = models.DateTimeField(auto_now_add=True, editable=True)
 
 	def __unicode__(self):
 		return u"Checkin at %s by %s on %s" % (self.place, self.user, self.timestamp)

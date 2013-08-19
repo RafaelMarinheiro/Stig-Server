@@ -98,6 +98,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'subdomains.middleware.SubdomainURLRoutingMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
@@ -125,6 +126,7 @@ INSTALLED_APPS = (
     'rest_framework',
     'south',
     'django_facebook',
+    'subdomains',
     'stigserver.apps.stig',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
@@ -208,3 +210,19 @@ REST_FRAMEWORK = {
 # Facebook
 FACEBOOK_APP_ID =  '433856753394803'
 FACEBOOK_APP_SECRET = '2a2647167334e0326abab9124dd063d2'
+
+# This is the urlconf that will be used for any subdomain that is not
+# listed in ``SUBDOMAIN_URLCONFS``, or if the HTTP ``Host`` header does not
+# contain the correct domain.
+# If you're planning on using wildcard subdomains, this should correspond
+# to the urlconf that will be used for the wildcard subdomain. For example,
+# 'accountname.mysite.com' will load the ROOT_URLCONF, since it is not
+# defined in ``SUBDOMAIN_URLCONFS``.
+ROOT_URLCONF = 'stigserver.urls.frontend'
+
+# A dictionary of urlconf module paths, keyed by their subdomain.
+SUBDOMAIN_URLCONFS = {
+    None: 'stigserver.urls.frontend',  # no subdomain, e.g. ``example.com``
+    'www': 'stigserver.urls.frontend',
+    'api': 'stigserver.urls.api',
+}

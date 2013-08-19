@@ -145,7 +145,7 @@ Em caso de sucesso, o servidor retornará uma resposta HTTP com código 200 (OK)
 
 ```
 {
-	"comments": [
+	"results": [
 					{
 						"id": <ID-COMENTARIO>,
 						"user": <ID-USUARIO>,
@@ -179,7 +179,7 @@ Em caso de sucesso, o servidor retornará uma resposta HTTP com código 200 (OK)
 
 ```
 {
-	"comments": [
+	"results": [
 					{
 						"id": <ID-COMENTARIO>,
 						"user_id": <ID-USUARIO>,
@@ -239,7 +239,7 @@ Em caso de sucesso, o servidor retornará uma resposta HTTP com código 200 (OK)
 
 ```
 {
-	"places":	[
+	"result":	[
 					{
 						"id": <ID-LOCAL>,
 						"timestamp": <TIMESTAMP-DO-CHECK-IN>
