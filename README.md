@@ -32,7 +32,7 @@ Acessando recursos
 #### Ver local
 A cada local está associado um campo identificador. Para acessar um local, deve-se fazer uma requisição GET:
 ```
-GET https://api.STIG.com/places/<ID-LOCAL>
+GET https://api.stigapp.co/places/<ID-LOCAL>
 ```
 
 Em caso de sucesso, o servidor retornará uma resposta HTTP com código 200 (OK) retornando um JSON no seguinte formato:
@@ -66,7 +66,7 @@ Caso não exista um local com o ID especificado, será retornada uma resposta HT
 
 Para buscar locais, deve-se fazer uma requisição GET:
 ```
-GET https://api.stig.com/places[?page=<PAGE-NO>&q=<QUERY-STRING>]
+GET https://api.stigapp.co/places[?page=<PAGE-NO>&q=<QUERY-STRING>]
 ```
 
 Em caso de sucesso, o servidor retornará uma resposta HTTP com código 200 (OK) retornando um JSON no seguinte formato:
@@ -115,7 +115,7 @@ Caso não existam locais na página especificada, será retornada uma resposta H
 Todo comentário está associados à um local. Cada comentário também possui um identificador associado ao local. Para acessar um comentário, deve-se fazer uma requisição GET:
 
 ```
-GET https://api.stig.com/places/<ID-LOCAL>/comments/<ID-COMENTARIO>
+GET https://api.stigapp.co/places/<ID-LOCAL>/comments/<ID-COMENTARIO>
 ```
 
 Em caso de sucesso, o servidor retornará uma resposta HTTP com código 200 (OK) retornando um JSON no seguinte formato:
@@ -138,7 +138,7 @@ Caso o local especificado não exista, ou caso o comentário não exista, será 
 
 Para acessar os comentários associados à um local, deve-se fazer uma requisição GET:
 ```
-GET https://api.stig.com/places/<ID-LOCAL>/comments[?page=<PAGE-NO>&filter=<LISTA-ID-STICKERS>]
+GET https://api.stigapp.co/places/<ID-LOCAL>/comments[?page=<PAGE-NO>&filter=<LISTA-ID-STICKERS>]
 ```
 
 Em caso de sucesso, o servidor retornará uma resposta HTTP com código 200 (OK) retornando um JSON no seguinte formato:
@@ -172,7 +172,7 @@ Caso o local especificado não exista, ou caso não exista comentários na pági
 
 Para acessar os replies de um comentário, deve-se fazer uma requisição GET:
 ```
-GET https://api.stig.com/places/<ID-LOCAL>/comments/reply[?page=<PAGE-NO>&filter=<LISTA-ID-STICKERS>]
+GET https://api.stigapp.co/places/<ID-LOCAL>/comments/reply[?page=<PAGE-NO>&filter=<LISTA-ID-STICKERS>]
 ```
 
 Em caso de sucesso, o servidor retornará uma resposta HTTP com código 200 (OK) retornando um JSON no seguinte formato:
@@ -208,7 +208,7 @@ Caso o local especificado não exista, caso o comentário não exista, ou caso n
 
 A cada usuário está associado um campo identificador. Para acessar um usuário, deve-se fazer uma requisição GET:
 ```
-GET https://api.STIG.com/users/<ID-USER>
+GET https://api.stigapp.co/users/<ID-USER>
 ```
 
 Em caso de sucesso, o servidor retornará uma resposta HTTP com código 200 (OK) retornando um JSON no seguinte formato:
@@ -232,7 +232,7 @@ Caso não exista um usuário com o ID especificado, será retornada uma resposta
 
 Para acessar o histório de check-in de um usuário, deve-se fazer uma requisição GET:
 ```
-GET https://api.stig.com/users/<ID-USER>/checkin[?page=<PAGE-NO>]
+GET https://api.stigapp.co/users/<ID-USER>/checkin[?page=<PAGE-NO>]
 ```
 
 Em caso de sucesso, o servidor retornará uma resposta HTTP com código 200 (OK) retornando um JSON no seguinte formato:
@@ -267,7 +267,7 @@ Criando recursos
 Para criar um novo local, deve-se fazer uma requisição POST:
 
 ```
-POST https://api.stig.com/places
+POST https://api.stigapp.co/places
 
 {
 	"name": <NOME-DO-LOCAL>,
@@ -311,7 +311,7 @@ Caso o usuário não tenha as permissões adequadas, será retornada uma respost
 Para fazer check-in em um local, deve-se fazer uma requisição POST:
 
 ```
-POST https://api.stig.com/places/<PLACE-ID>/checkin
+POST https://api.stigapp.co/places/<PLACE-ID>/checkin
 ```
 Em caso de sucesso, será retornada uma resposta HTTP 201 (CREATED). Caso o local não exista, será retornada uma resposta HTTP com código 404 (NOT FOUND).
 
@@ -320,7 +320,7 @@ Em caso de sucesso, será retornada uma resposta HTTP 201 (CREATED). Caso o loca
 Para cadastrar um novo usuário, deve-se fazer uma requisição POST (não há a necessidade de autenticação nessa requisição):
 
 ```
-POST https://api.stig.com/users
+POST https://api.stigapp.co/users
 
 {
 	"fb-id": <USER-ID-USUARIO>,
@@ -337,7 +337,7 @@ Em caso de sucesso, será retornada uma resposta HTTP 201 (CREATED). Caso o usu�
 #### Adicionar comentário à local
 Para adicionar um comentário à um local, deve-se fazer uma requisição POST:
 ```
-POST https://api.stig.com/places/<PLACE-ID>/comments
+POST https://api.stigapp.co/places/<PLACE-ID>/comments
 
 {
 	"text": <TEXTO-COMENTARIO>,
@@ -363,7 +363,7 @@ Caso o usuário não tenha as permissões adequadas, será retornada uma respost
 
 Para adicionar um reply à um comentário, deve-se fazer uma requisição POST:
 ```
-POST https://api.stig.com/places/<PLACE-ID>/comments/<COMMENT-ID>/reply
+POST https://api.stigapp.co/places/<PLACE-ID>/comments/<COMMENT-ID>/reply
 
 {
 	"text": <TEXTO-COMENTARIO>,
