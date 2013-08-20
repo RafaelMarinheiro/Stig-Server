@@ -1,3 +1,6 @@
+import os
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 # Django settings for stigserver project.
 
 DEBUG = True
@@ -109,9 +112,7 @@ ROOT_URLCONF = 'stigserver.urls'
 WSGI_APPLICATION = 'stigserver.wsgi.application'
 
 TEMPLATE_DIRS = (
-    # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
-    # Always use forward slashes, even on Windows.
-    # Don't forget to use absolute paths, not relative paths.
+    os.path.join(BASE_DIR, '../templates'),
 )
 
 INSTALLED_APPS = (
@@ -122,7 +123,6 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.gis',
-    # 'tastypie',
     'rest_framework',
     'south',
     'django_facebook',
@@ -181,13 +181,12 @@ AUTHENTICATION_BACKENDS = (
 )
 
 # Static asset configuration
-import os
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 STATIC_ROOT = 'staticfiles'
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, '../static'),
 )
 
 
@@ -226,3 +225,6 @@ SUBDOMAIN_URLCONFS = {
     'www': 'stigserver.urls.frontend',
     'api': 'stigserver.urls.api',
 }
+
+# google_analytics
+GOOGLE_ANALYTICS_MODEL = True 
