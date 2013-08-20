@@ -13,6 +13,12 @@ class GeoPointField(serializers.WritableField):
 			data = dict(data)
 		return Point(data['lat'], data['lon'])
 
+class FriendsListField(serializers.Field):
+	def to_native(self, obj):
+		friends = self.context['view'].request.auth.friends.all()
+		friends = [f.pk for f in friends if f.get_place() == obj.pk]
+		return friends
+
 
 class UserSerializer(serializers.ModelSerializer):
 	place = serializers.Field(source='get_place')
@@ -36,10 +42,11 @@ class PlaceSerializer(serializers.ModelSerializer):
 	stickers = serializers.Field(source='get_sticker_relevance')
 	ranking = serializers.Field(source='get_ranking')
 	location = GeoPointField(source='geolocation')
+	friends = FriendsListField(source='*')
 
 	class Meta:
 		model = Place
-		fields = ('id', 'name', 'image', 'description', 'location', 'stickers', 'ranking')
+		fields = ('id', 'name', 'image', 'description', 'location', 'stickers', 'ranking', 'friends')
 
 
 class CheckinSerializer(serializers.ModelSerializer):

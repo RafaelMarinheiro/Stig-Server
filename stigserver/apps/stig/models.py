@@ -59,6 +59,18 @@ class StigUser(models.Model):
 		except Exception, e:
 			raise PermissionDenied
 
+	def check_access_token(self, access_token):
+		try:
+			graph = OpenFacebook(access_token)
+			me = graph.get('me', fields='id')
+
+			return self.fb_id == me['id']
+		except Exception, e:
+			return False
+
+	def can_see_details(self, other):
+		return (self.pk == other.pk) or (self.pk in [f.pk for f in other.friends.all()])
+
 
 class Place(models.Model):
 	name = models.CharField(max_length=100)
