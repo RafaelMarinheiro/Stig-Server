@@ -15,7 +15,7 @@ class UserViewSet(viewsets.ModelViewSet):
 	serializer_class = UserSerializer
 
 	def get_queryset(self):
-		return self.queryset.filter(Q(friends__pk=self.request.auth.pk) | Q(pk=self.request.auth.pk))
+		return self.queryset.filter(Q(friends__pk=self.request.auth.pk))
 
 
 class PlaceViewSet(viewsets.ModelViewSet):
