@@ -37,6 +37,8 @@ class CommentsForPlace(generics.ListCreateAPIView):
 	serializer_class = CommentSerializer
 
 	def get_queryset(self):
+		self.queryset = self.queryset.order_by('created_on')
+
 		before = self.request.QUERY_PARAMS.get('before', None)
 		if before:
 			self.queryset = self.queryset.filter(timestamp__lte=before)
