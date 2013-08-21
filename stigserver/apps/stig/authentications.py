@@ -13,7 +13,7 @@ class FacebookStigAuthentication(authentication.BaseAuthentication):
 		except Exception, e:
 			return None
 
-		if not fb_id:
+		if not fb_id or fb_id == '':
 			return None
 
 		try:
@@ -27,7 +27,4 @@ class FacebookStigAuthentication(authentication.BaseAuthentication):
 			raise exceptions.AuthenticationFailed('No such user')
 
 	def authenticate_header(self, request):
-		if request.method != 'POST':
-			return 'Basic realm="api.stigapp.co"'
-		else:
-			super(FacebookStigAuthentication, self).authenticate_header(request)
+		return 'Basic realm="api.stigapp.co"'

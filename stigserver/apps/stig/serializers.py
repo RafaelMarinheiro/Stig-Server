@@ -15,9 +15,11 @@ class GeoPointField(serializers.WritableField):
 
 class FriendsListField(serializers.Field):
 	def to_native(self, obj):
-		friends = self.context['view'].request.auth.friends.all()
-		friends = [f.pk for f in friends if f.get_place() == obj.pk]
-		return friends
+		if self.context['view'].request.auth is not None:
+			friends = self.context['view'].request.auth.friends.all()
+			friends = [f.pk for f in friends if f.get_place() == obj.pk]
+			return friends
+		return []
 
 
 class UserSerializer(serializers.ModelSerializer):

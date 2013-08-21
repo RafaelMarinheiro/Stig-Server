@@ -1,6 +1,6 @@
 # Create your views here.
 
-from rest_framework import viewsets, generics, permissions
+from rest_framework import viewsets, generics, permissions, authentication
 from serializers import UserSerializer, PlaceSerializer, CommentSerializer, CheckinSerializer
 from models import StigUser, Place, Sticker, Comment, Checkin
 from django.http import Http404
@@ -14,12 +14,12 @@ class UserViewSet(viewsets.ModelViewSet):
 	queryset = StigUser.objects.all()
 	serializer_class = UserSerializer
 
-	def get_queryset(self):
-		return self.queryset.filter(Q(friends__pk=self.request.auth.pk))
+	# def get_queryset(self):
+	# 	return self.queryset.filter(Q(friends__pk=self.request.auth.pk))
 
 
 class PlaceViewSet(viewsets.ModelViewSet):
-	authentication_classes = (FacebookStigAuthentication, )
+	authentication_classes = (FacebookStigAuthentication, authentication.SessionAuthentication)
 	permission_classes = (FacebookStigPermission, )
 	queryset = Place.objects.all()
 	serializer_class = PlaceSerializer
