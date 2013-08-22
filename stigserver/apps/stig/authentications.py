@@ -24,7 +24,7 @@ class FacebookStigAuthentication(authentication.BaseAuthentication):
 			else:
 				raise exceptions.AuthenticationFailed('Invalid access token')
 		except StigUser.DoesNotExist:
-			raise exceptions.AuthenticationFailed('No such user')
+			raise exceptions.AuthenticationFailed('No such user: %s' % fb_id)
 
 	def authenticate_header(self, request):
 		return 'Basic realm="api.stigapp.co"'

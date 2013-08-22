@@ -1,12 +1,17 @@
 from django.contrib.gis import admin
 from stigserver.apps.stig.models import *
+from django.contrib.contenttypes import generic
 
 class PlaceStickerInline(admin.TabularInline):
     model = PlaceSticker
     extra = 1
 
+class ThumbInline(generic.GenericTabularInline):
+	model = Thumb
+	extra = 1
+
 class CommentAdmin(admin.ModelAdmin):
-	inlines = (PlaceStickerInline, )
+	inlines = (PlaceStickerInline, ThumbInline)
 
 class FriendshipInline(admin.TabularInline):
     model = StigUser

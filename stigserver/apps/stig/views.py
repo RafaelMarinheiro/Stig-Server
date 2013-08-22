@@ -1,12 +1,16 @@
 # Create your views here.
 
-from rest_framework import viewsets, generics, permissions, authentication
+from rest_framework import viewsets, generics, permissions, authentication, status
 from serializers import UserSerializer, PlaceSerializer, CommentSerializer, CheckinSerializer
-from models import StigUser, Place, Sticker, Comment, Checkin
+from models import StigUser, Place, Sticker, Comment, Checkin, Thumb
 from django.http import Http404
 from authentications import FacebookStigAuthentication
 from permissions import FacebookStigPermission
 from django.db.models import Q
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from django.contrib.contenttypes.models import ContentType
 
 class UserViewSet(viewsets.ModelViewSet):
 	authentication_classes = (FacebookStigAuthentication, )
@@ -66,6 +70,28 @@ class RepliesForComment(generics.ListCreateAPIView):
 class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
 	queryset = Comment.objects.all()
 	serializer_class = CommentSerializer
+
+
+class ThumbForComment(APIView):
+	authentication_classes = (FacebookStigAuthentication, )
+	permission_classes = (FacebookStigPermission, )
+
+	def post(self, request, format=None, **kwargs):
+		if self.request.auth is not None:
+			comment = Comment.objects.get(pk=kwargs['comment_pk'])
+			modifier = kwargs['modifier']
+
+			try:
+				thumb = Thumb.objects.get(content_type=ContentType.objects.get(app_label='stig', model='comment'), object_id=comment.pk, user=self.request.auth)
+			except Thumb.DoesNotExist, e:
+				thumb = Thumb(content_type=ContentType.objects.get(app_label='stig', model='comment'), object_id=comment.pk, user=self.request.auth)
+
+			thumb.modifier = modifier
+			thumb.save()
+			
+			return Response({'thumbs': comment.get_thumb_count()}, status=status.HTTP_200_OK)
+
+		return Response({'error': 'You must athenticate.'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 class CheckinsForUser(generics.ListCreateAPIView):

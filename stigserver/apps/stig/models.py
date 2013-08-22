@@ -2,6 +2,8 @@ from django.contrib.gis.db import models
 from django.db.models import Avg
 from open_facebook.api import OpenFacebook
 from rest_framework.exceptions import PermissionDenied
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes import generic
 
 # Create your models here.
 class StigUser(models.Model):
@@ -128,8 +130,13 @@ class Comment(models.Model):
 	content = models.TextField()
 	created_on = models.DateTimeField(auto_now_add=True)
 	parent = models.ForeignKey('Comment', null=True, blank=True)
+	thumbs = generic.GenericRelation('Thumb')
+
+	def get_thumb_count(self):
+		thumbs = Thumb.objects.filter(content_type=ContentType.objects.get(app_label='stig', model='comment'), object_id=self.pk).aggregate(modifier_avg=Avg('modifier'))['modifier_avg']
+		return thumbs or 0
+
 	stickers_to_save = []
-	
 
 	sticker_infos = [
 		(1, 0), # Money
@@ -192,6 +199,24 @@ class Comment(models.Model):
 			for sticker in self.stickers_to_save:
 				sticker.comment_id = self.id
 				sticker.save()
+
+
+class Thumb(models.Model):
+	MODIFIER_UP = 1
+	MODIFIER_DOWN = -1
+	MODIFIER_CHOICES = (
+		(MODIFIER_UP, 'Up'),
+		(MODIFIER_DOWN, 'Down'),
+	)
+	modifier = models.IntegerField(choices=MODIFIER_CHOICES)
+	created_on = models.DateTimeField(auto_now_add=True)
+	user = models.ForeignKey(StigUser)
+	content_type = models.ForeignKey(ContentType)
+	object_id = models.PositiveIntegerField()
+	content_object = generic.GenericForeignKey('content_type', 'object_id')
+
+	def __unicode__(self):
+		return "Thumbs %s for %s by %s" % (self.get_modifier_display(), self.content_object, self.user)
 
 
 class Checkin(models.Model):
