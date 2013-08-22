@@ -6,7 +6,7 @@ from django.contrib.gis.geos import Point
 
 class GeoPointField(serializers.WritableField):
 	def to_native(self, obj):
-		return {'lat': obj.x, 'lon': obj.y}
+		return {'lon': obj.x, 'lat': obj.y}
 
 	def from_native(self, data):
 		if type(data) != dict:
