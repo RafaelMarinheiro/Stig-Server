@@ -1,5 +1,5 @@
 from django.contrib.gis.db import models
-from django.db.models import Avg
+from django.db.models import Avg, Sum
 from open_facebook.api import OpenFacebook
 from rest_framework.exceptions import PermissionDenied
 from django.contrib.contenttypes.models import ContentType
@@ -133,7 +133,7 @@ class Comment(models.Model):
 	thumbs = generic.GenericRelation('Thumb')
 
 	def get_thumb_count(self):
-		thumbs = Thumb.objects.filter(content_type=ContentType.objects.get(app_label='stig', model='comment'), object_id=self.pk).aggregate(modifier_avg=Avg('modifier'))['modifier_avg']
+		thumbs = Thumb.objects.filter(content_type=ContentType.objects.get(app_label='stig', model='comment'), object_id=self.pk).aggregate(modifier_total=Sum('modifier'))['modifier_total']
 		return thumbs or 0
 
 	stickers_to_save = []
