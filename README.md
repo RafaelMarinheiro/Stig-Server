@@ -128,7 +128,8 @@ Em caso de sucesso, o servidor retornará uma resposta HTTP com código 200 (OK)
 	"content": <TEXTO-COMENTARIO>,
 	"stickers": <LISTA-ID-STICKERS-CODIFICADA>,
 	"timestamp": <TIMESTAMP-DA-MENSAGEM>,
-	"parent": <ID-MENSAGEM-REPLY>
+	"parent": <ID-MENSAGEM-REPLY>,
+	"thumbs": <SOMA-LIKE-DISLIKE>
 }
 ```
 
@@ -150,7 +151,7 @@ Em caso de sucesso, o servidor retornará uma resposta HTTP com código 200 (OK)
 						"id": <ID-COMENTARIO>,
 						"user": <ID-USUARIO>,
 						"place": <ID-LOCAL>,
-						"text": <TEXTO-COMENTARIO>,
+						"content": <TEXTO-COMENTARIO>,
 						"stickers": <LISTA-ID-STICKERS-CODIFICADA>,
 						"timestamp": <TIMESTAMP-DA-MENSAGEM>
 					},
@@ -184,7 +185,7 @@ Em caso de sucesso, o servidor retornará uma resposta HTTP com código 200 (OK)
 						"id": <ID-COMENTARIO>,
 						"user_id": <ID-USUARIO>,
 						"place_id": <ID-LOCAL>,
-						"text": <TEXTO-COMENTARIO>,
+						"content": <TEXTO-COMENTARIO>,
 						"stickers": <LISTA-ID-STICKERS>,
 						"timestamp": <TIMESTAMP-DA-MENSAGEM>
 					},
@@ -196,11 +197,27 @@ Em caso de sucesso, o servidor retornará uma resposta HTTP com código 200 (OK)
 }
 ```
 
-Os comentários deverão ser ordenados em ordem decrescente do timestamp.
+Os comentários deverão ser ordenados em ordem **crescente** do timestamp.
 
 Os campos "prev" e "next" aparecerão se necessário.
 
 Caso o local especificado não exista, caso o comentário não exista, ou caso não exista comentários na página especificada, será retornada uma resposta HTTP com código 404 (NOT FOUND).
+
+#### Curtir/Descurtir um comentário
+
+Para adicionar um Like ou Dislike em um comentário, deve-se fazer uma requisição POST:
+```
+POST https://api.stigapp.co/places/<ID-LOCAL>/comments/<ID-COMMENT>/like/
+POST https://api.stigapp.co/places/<ID-LOCAL>/comments/<ID-COMMENT>/dislike/
+```
+
+O corpo da requisição deve ser vazio. Em caso de sucesso, o servidor retornará uma resposta HTTP com código 200 (OK), retornando um JSON no seguinte formato:
+```
+{
+	"thumbs": <SOMA-LIKE-DISLIKE>
+}
+```
+
 
 ### Usuários
 
@@ -340,7 +357,7 @@ Para adicionar um comentário à um local, deve-se fazer uma requisição POST:
 POST https://api.stigapp.co/places/<PLACE-ID>/comments
 
 {
-	"text": <TEXTO-COMENTARIO>,
+	"content": <TEXTO-COMENTARIO>,
 	"stickers": <LISTA-ID-STICKERS>
 }
 ```
@@ -351,7 +368,7 @@ Em caso de sucesso, será retornada uma resposta HTTP 201 (CREATED). com o segui
 	"id": <ID-COMENTARIO>,
 	"place_id": <ID-LOCAL>,
 	"user_id": <ID-USUARIO>,
-	"text": <TEXTO-COMENTARIO>,
+	"content": <TEXTO-COMENTARIO>,
 	"stickers": <LISTA-ID-STICKERS>,
 	"timestamp": <TIMESTAMP-DA-MENSAGEM>,
 	"reply": null
@@ -366,7 +383,7 @@ Para adicionar um reply à um comentário, deve-se fazer uma requisição POST:
 POST https://api.stigapp.co/places/<PLACE-ID>/comments/<COMMENT-ID>/reply
 
 {
-	"text": <TEXTO-COMENTARIO>,
+	"content": <TEXTO-COMENTARIO>,
 	"stickers": <LISTA-ID-STICKERS>
 }
 ```
@@ -377,7 +394,7 @@ Em caso de sucesso, será retornada uma resposta HTTP 201 (CREATED) com o seguin
 	"id": <ID-COMENTARIO>,
 	"place_id": <ID-LOCAL>,
 	"user_id": <ID-USUARIO>,
-	"text": <TEXTO-COMENTARIO>,
+	"content": <TEXTO-COMENTARIO>,
 	"stickers": <LISTA-ID-STICKERS>,
 	"timestamp": <TIMESTAMP-DA-MENSAGEM>,
 	"reply": <ID-MENSAGEM-REPLY>
