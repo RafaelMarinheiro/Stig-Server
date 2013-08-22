@@ -218,7 +218,6 @@ O corpo da requisição deve ser vazio. Em caso de sucesso, o servidor retornar�
 }
 ```
 
-
 ### Usuários
 
 #### Ver usuário
