@@ -36,11 +36,13 @@ class UserSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
 	stickers = serializers.IntegerField(source='stickers')
-	thumbs = serializers.Field(source='get_thumb_count')
+	# thumbs = serializers.Field(source='get_thumb_count')
+	likes = serializers.Field(source='get_thumb_up')
+	dislikes = serializers.Field(source='get_thumb_down')
 
 	class Meta:
 		model = Comment
-		fields = ('id', 'stickers', 'place', 'user', 'content', 'created_on', 'parent', 'thumbs')
+		fields = ('id', 'stickers', 'place', 'user', 'content', 'created_on', 'parent', 'likes', 'dislikes')
 
 
 class PlaceSerializer(serializers.ModelSerializer):

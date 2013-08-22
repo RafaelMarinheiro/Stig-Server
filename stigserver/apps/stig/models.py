@@ -136,6 +136,14 @@ class Comment(models.Model):
 		thumbs = Thumb.objects.filter(content_type=ContentType.objects.get(app_label='stig', model='comment'), object_id=self.pk).aggregate(modifier_total=Sum('modifier'))['modifier_total']
 		return thumbs or 0
 
+	def get_thumb_up(self):
+		thumbs = Thumb.objects.filter(content_type=ContentType.objects.get(app_label='stig', model='comment'), object_id=self.pk, modifier=Thumb.MODIFIER_UP).count()
+		return thumbs or 0
+
+	def get_thumb_down(self):
+		thumbs = Thumb.objects.filter(content_type=ContentType.objects.get(app_label='stig', model='comment'), object_id=self.pk, modifier=Thumb.MODIFIER_DOWN).count()
+		return thumbs or 0
+
 	stickers_to_save = []
 
 	sticker_infos = [
