@@ -104,6 +104,19 @@ class ThumbForComment(APIView):
 		return Response({'error': 'You must athenticate.'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
+class MySelf(APIView):
+	authentication_classes = (FacebookStigAuthentication, )
+	permission_classes = (FacebookStigPermission, )
+
+	def get(self, request, format=None, **kwargs):
+		if self.request.auth is not None:
+			serializer = UserSerializer(self.request.auth)
+			
+			return Response(serializer.data, status=status.HTTP_200_OK)
+
+		return Response({'error': 'You must athenticate.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+
 class CheckinsForUser(generics.ListCreateAPIView):
 	queryset = Checkin.objects.all()
 	serializer_class = CheckinSerializer

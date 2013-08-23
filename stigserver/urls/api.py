@@ -16,6 +16,7 @@ router.register(r'places', views.PlaceViewSet)
 urlpatterns = patterns('',
     (r'^facebook/', include('django_facebook.urls')),
     # (r'^api/', include(v1_api.urls)),
+    url(r'^users/me/$', views.MySelf.as_view(), name='users-me'),
     url(r'^', include(router.urls)),
     url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^places/(?P<place_pk>\d+)/comments/$', views.CommentsForPlace.as_view(), name='commentsforplace-list'),

@@ -225,6 +225,7 @@ O corpo da requisição deve ser vazio. Em caso de sucesso, o servidor retornar�
 A cada usuário está associado um campo identificador. Para acessar um usuário, deve-se fazer uma requisição GET:
 ```
 GET https://api.stigapp.co/users/<ID-USER>
+GET https://api.stigapp.co/users/me
 ```
 
 Em caso de sucesso, o servidor retornará uma resposta HTTP com código 200 (OK) retornando um JSON no seguinte formato:
