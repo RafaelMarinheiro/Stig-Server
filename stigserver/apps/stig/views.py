@@ -11,6 +11,8 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.gis.geos import Point
+import re
 
 class UserViewSet(viewsets.ModelViewSet):
 	authentication_classes = (FacebookStigAuthentication, )
@@ -30,9 +32,17 @@ class PlaceViewSet(viewsets.ModelViewSet):
 
 	def get_queryset(self):
 		queryset = self.queryset
+
 		search_query = self.request.QUERY_PARAMS.get('q', None)
 		if search_query is not None:
 			queryset = queryset.filter(name__icontains=search_query)
+
+		geolocation = self.request.META.get('HTTP_GEOLOCATION', None)
+		if geolocation is not None:
+			lon, lat = re.match(r'geo:(\-?\d+\.\d+),(\-?\d+\.\d+)', geolocation).groups()
+			# raise Exception(lon)
+			point = Point(float(lon), float(lat))
+			queryset = self.queryset.distance(point).order_by('distance')
 		return queryset
 
 
