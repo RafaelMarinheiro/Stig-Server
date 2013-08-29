@@ -1,8 +1,9 @@
-from models import StigUser, Place, Sticker, Comment, Checkin
+from models import StigUser, Place, Sticker, Comment, Checkin, PlaceSticker
 from rest_framework import serializers
 from rest_framework.parsers import JSONParser
 from rest_framework.reverse import reverse
 from django.contrib.gis.geos import Point
+from django.db.models import Avg
 
 class GeoPointField(serializers.WritableField):
 	def to_native(self, obj):
@@ -20,6 +21,23 @@ class FriendsListField(serializers.Field):
 			friends = [f.pk for f in friends if f.get_place() == obj.pk]
 			return friends
 		return []
+
+
+class RankingField(serializers.Field):
+	def to_native(self, obj):
+		ranking = obj.get_ranking()
+
+		if self.context['view'].request.auth is not None:
+			# Social
+			user = self.context['view'].request.auth
+			modifier_avg = PlaceSticker.objects.filter(comment__user__friends__pk=user.pk, comment__place=obj).aggregate(modifier_avg=Avg('modifier'))['modifier_avg']
+			if modifier_avg is None:
+				modifier_avg = 0
+			social = modifier_avg * 1000
+
+			ranking['social'] = social
+			ranking['overall'] = (ranking['buzz'] + social) / 2
+		return ranking
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -47,7 +65,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
 class PlaceSerializer(serializers.ModelSerializer):
 	stickers = serializers.Field(source='get_sticker_relevance')
-	ranking = serializers.Field(source='get_ranking')
+	ranking = RankingField(source='*')
 	location = GeoPointField(source='geolocation')
 	friends = FriendsListField(source='*')
 

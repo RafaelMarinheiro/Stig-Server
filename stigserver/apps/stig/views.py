@@ -47,6 +47,8 @@ class PlaceViewSet(viewsets.ModelViewSet):
 
 
 class CommentsForPlace(generics.ListCreateAPIView):
+	authentication_classes = (FacebookStigAuthentication, authentication.SessionAuthentication)
+	permission_classes = (FacebookStigPermission, )
 	queryset = Comment.objects.all()
 	serializer_class = CommentSerializer
 

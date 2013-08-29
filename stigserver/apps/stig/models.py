@@ -96,7 +96,30 @@ class Place(models.Model):
 		return result
 
 	def get_ranking(self):
-		return {'social': 500, 'buzz': 500, 'overall': 500}
+		# Buzz
+		sticker_weigths = {
+			'money': 0.125, # Money
+			'food': 0.15, # Food
+			'queue': 0.125, # Queue
+			'music': 0.25, # Music
+			'accessibility': 0.05, # Accessibility
+			'people': 0.3, # People
+		}
+
+		relevance = self.get_sticker_relevance()
+		buzz = 0
+
+		for key in relevance:
+			buzz += relevance[key] * sticker_weigths[key] * 1000
+
+		# Social
+		social = 0 # 0 if not authenticated
+
+		# Overall
+		overall = (buzz + social) / 2
+
+		return {'buzz': int(buzz), 'social': social, 'overall': int(overall)}
+
 
 
 class Sticker(models.Model):
