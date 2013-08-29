@@ -56,8 +56,15 @@ class CommentsForPlace(generics.ListCreateAPIView):
 		self.queryset = self.queryset.order_by('created_on')
 
 		before = self.request.QUERY_PARAMS.get('before', None)
+		stickers_filter = self.request.QUERY_PARAMS.get('filter', None)
+
 		if before:
 			self.queryset = self.queryset.filter(timestamp__lte=before)
+
+		if stickers_filter:
+			sticker_ids = stickers_filter.split(',')
+			for sticker_id in sticker_ids:
+				self.queryset = self.queryset.filter(placesticker__sticker__pk=sticker_id, placesticker__modifier__in=[-1, 1])
 
 		place_pk = self.kwargs['place_pk']
 		try:
