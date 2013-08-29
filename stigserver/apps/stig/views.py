@@ -62,7 +62,11 @@ class CommentsForPlace(generics.ListCreateAPIView):
 			self.queryset = self.queryset.filter(timestamp__lte=before)
 
 		if stickers_filter:
-			sticker_ids = stickers_filter.split(',')
+			sticker_ids = []
+			for i in xrange(1,6):
+				if int(stickers_filter) & (1 << (i-1)) > 0:
+					sticker_ids.append(i)
+
 			for sticker_id in sticker_ids:
 				self.queryset = self.queryset.filter(placesticker__sticker__pk=sticker_id, placesticker__modifier__in=[-1, 1])
 
