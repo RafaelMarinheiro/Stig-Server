@@ -49,7 +49,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = StigUser
-		fields = ('id', 'fb_id', 'first_name', 'last_name', 'avatar', 'place', 'access_token')
+		fields = ('id', 'fb_id', 'first_name', 'last_name', 'avatar', 'place', 'points', 'access_token')
 
 
 class CommentSerializer(serializers.ModelSerializer):

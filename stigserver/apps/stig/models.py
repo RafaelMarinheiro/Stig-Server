@@ -4,6 +4,8 @@ from open_facebook.api import OpenFacebook
 from rest_framework.exceptions import PermissionDenied
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
+from django.db import transaction
+from django.db.models import signals
 
 # Create your models here.
 class StigUser(models.Model):
@@ -12,6 +14,7 @@ class StigUser(models.Model):
 	avatar = models.URLField()
 	fb_id = models.CharField(max_length=20, unique=True)
 	friends = models.ManyToManyField('self')
+	points = models.IntegerField()
 	_access_token = ''
 
 	def __unicode__(self):
@@ -72,6 +75,18 @@ class StigUser(models.Model):
 
 	def can_see_details(self, other):
 		return (self.pk == other.pk) or (self.pk in [f.pk for f in other.friends.all()])
+
+	POINTS_CHECKIN = 3
+	POINTS_COMMENT = 2
+	POINTS_LIKED = 2
+	POINTS_DISLIKED = -1
+
+	@transaction.commit_manually()
+	def punctuate(self, points):
+		user = StigUser.objects.select_for_update().get(id=self.pk)
+		user.points += points
+		user.save()
+		transaction.commit()
 
 
 class Place(models.Model):
@@ -235,6 +250,13 @@ class Comment(models.Model):
 				sticker.save()
 
 
+def punctuate_comment(sender, **kwargs):
+	if kwargs['created']:
+		kwargs['instance'].user.punctuate(StigUser.POINTS_COMMENT)
+
+signals.post_save.connect(punctuate_comment, sender=Comment)
+
+
 class Thumb(models.Model):
 	MODIFIER_UP = 1
 	MODIFIER_DOWN = -1
@@ -253,6 +275,26 @@ class Thumb(models.Model):
 		return "Thumbs %s for %s by %s" % (self.get_modifier_display(), self.content_object, self.user)
 
 
+def punctuate_thumb(sender, **kwargs):
+	if kwargs['instance'].modifier == Thumb.MODIFIER_UP:
+		kwargs['instance'].content_object.user.punctuate(StigUser.POINTS_LIKED)
+	elif kwargs['instance'].modifier == Thumb.MODIFIER_DOWN:
+		kwargs['instance'].content_object.user.punctuate(StigUser.POINTS_DISLIKED)
+
+def undo_punctuate_thumb(sender, **kwargs):
+	try:
+		old_thumb = Thumb.objects.get(pk=kwargs['instance'].pk)
+		if old_thumb.modifier == Thumb.MODIFIER_UP:
+			old_thumb.content_object.user.punctuate(-StigUser.POINTS_LIKED)
+		elif old_thumb.modifier == Thumb.MODIFIER_DOWN:
+			old_thumb.content_object.user.punctuate(-StigUser.POINTS_DISLIKED)
+	except Thumb.DoesNotExist:
+		pass
+
+signals.post_save.connect(punctuate_thumb, sender=Thumb)
+signals.pre_save.connect(undo_punctuate_thumb, sender=Thumb)
+
+
 class Checkin(models.Model):
 	place = models.ForeignKey(Place)
 	user = models.ForeignKey(StigUser)
@@ -261,6 +303,10 @@ class Checkin(models.Model):
 	def __unicode__(self):
 		return u"Checkin at %s by %s on %s" % (self.place, self.user, self.timestamp)
 
+def punctuate_checkin(sender, **kwargs):
+	if kwargs['created']:
+		kwargs['instance'].user.punctuate(StigUser.POINTS_CHECKIN)
 
+signals.post_save.connect(punctuate_checkin, sender=Checkin)
 
 
