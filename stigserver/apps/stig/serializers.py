@@ -52,17 +52,6 @@ class UserSerializer(serializers.ModelSerializer):
 		fields = ('id', 'fb_id', 'first_name', 'last_name', 'avatar', 'place', 'points', 'access_token')
 
 
-class CommentSerializer(serializers.ModelSerializer):
-	stickers = serializers.IntegerField(source='stickers')
-	# thumbs = serializers.Field(source='get_thumb_count')
-	likes = serializers.Field(source='get_thumb_up')
-	dislikes = serializers.Field(source='get_thumb_down')
-
-	class Meta:
-		model = Comment
-		fields = ('id', 'stickers', 'place', 'user', 'content', 'created_on', 'parent', 'likes', 'dislikes')
-
-
 class PlaceSerializer(serializers.ModelSerializer):
 	stickers = serializers.Field(source='get_sticker_relevance')
 	ranking = RankingField(source='*')
@@ -72,6 +61,30 @@ class PlaceSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Place
 		fields = ('id', 'name', 'image', 'description', 'location', 'stickers', 'ranking', 'friends')
+
+class CommentSerializer(serializers.ModelSerializer):
+	stickers = serializers.IntegerField(source='stickers')
+	# thumbs = serializers.Field(source='get_thumb_count')
+	likes = serializers.Field(source='get_thumb_up')
+	dislikes = serializers.Field(source='get_thumb_down')
+	place = serializers.PrimaryKeyRelatedField(required=False)
+	user = serializers.PrimaryKeyRelatedField(required=False)
+
+	class Meta:
+		model = Comment
+		fields = ('id', 'stickers', 'place', 'user', 'content', 'created_on', 'parent', 'likes', 'dislikes')
+
+	def validate(self, attrs):
+		if 'place' not in attrs.keys() or attrs['place'] is None:
+			attrs['place'] = Place.objects.get(pk=self.context['view'].kwargs['place_pk'])
+			# pass
+		if 'user' not in attrs.keys() or attrs['user'] is None:
+			if self.context['view'].request.auth is not None:
+				attrs['user'] = self.context['view'].request.auth
+
+			# pass
+
+		return attrs
 
 
 class CheckinSerializer(serializers.ModelSerializer):

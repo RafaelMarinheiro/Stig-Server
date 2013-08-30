@@ -63,7 +63,7 @@ class CommentsForPlace(generics.ListCreateAPIView):
 
 		if stickers_filter:
 			sticker_ids = []
-			for i in xrange(1,6):
+			for i in xrange(1,7):
 				if int(stickers_filter) & (1 << (i-1)) > 0:
 					sticker_ids.append(i)
 
@@ -78,7 +78,12 @@ class CommentsForPlace(generics.ListCreateAPIView):
 		return self.queryset.filter(place__pk=place_pk)
 
 	def pre_save(self, obj):
-		obj.place_id = self.kwargs['place_pk']
+		obj.place = Place.objects.get(pk=self.kwargs['place_pk'])
+
+		if self.request.auth is not None:
+			obj.user = self.request.auth
+		else:
+			return Response({'error': 'You must athenticate.'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
 class RepliesForComment(generics.ListCreateAPIView):
