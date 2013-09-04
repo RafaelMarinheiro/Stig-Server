@@ -1,6 +1,35 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Aguarde!</h1>
-<p>Em breve…</p>
+
+{% if user.is_authenticated %}
+
+<div class="iphone">Lorem</div>
+<h1 class="logo"><span class="sr-only">Stig</span></h1>
+<p class="sr-only">Saia para o melhor lugar</p>
+
+{% verbatim %}
+<div id="comment" ng-controller="CommentCtrl">
+	<div class="media">
+		<div class="pull-left">
+			<img class="media-object photo" src="{{comment.photo}}" alt="{{comment.name}}">
+			<p style="text-align: center">
+				<span ng-repeat="sticker in comment.stickers">
+					<span class="sticker sticker-{{sticker.name}} sticker-{{sticker.modifier}}"></span> 
+				</span>
+			</p>
+		</div>
+
+		<div class="media-body">
+			<h4 class="media-heading">{{comment.name}} &rsaquo; {{comment.place}}</h4>
+			<p>{{comment.comment}}</p>
+		</div>
+	</div>
+</div>
+{% endverbatim %}
+
+{% else %}
+<h1>Em breve!</h1>
+<p>Aguarde…</p>
+{% endif %}
 {% endblock %}
