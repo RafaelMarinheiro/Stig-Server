@@ -1,10 +1,10 @@
 function CommentCtrl ($scope, $timeout, $http) {
 	$scope.comment = {
-		photo: 'https://fbcdn-sphotos-a-a.akamaihd.net/hphotos-ak-ash4/482258_10200159621925860_1616117691_n.jpg',
-		stickers: 'H U E',
-		name: 'Alexandre F',
-		place: 'The Joker Pub',
-		comment: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit.',
+		photo: '',
+		stickers: '',
+		name: '',
+		place: '',
+		comment: '',
 	};
 
 	var updateComment = function () {
@@ -15,5 +15,5 @@ function CommentCtrl ($scope, $timeout, $http) {
 		$timeout(updateComment, 5000);
 	}
 
-	$timeout(updateComment, 5000);
+	$timeout(updateComment, 1);
 }

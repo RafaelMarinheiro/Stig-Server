@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load staticfiles %}
 
 {% block content %}
 
@@ -12,7 +13,9 @@
 <div id="comment" ng-controller="CommentCtrl">
 	<div class="media">
 		<div class="pull-left">
-			<img class="media-object photo" src="{{comment.photo}}" alt="{{comment.name}}">
+			<div class="media-object photo">
+				<img class="photo" src="{{comment.photo}}" alt="{{comment.name}}" onerror="avatarError(this);">
+			</div>
 			<p style="text-align: center">
 				<span ng-repeat="sticker in comment.stickers">
 					<span class="sticker sticker-{{sticker.name}} sticker-{{sticker.modifier}}"></span> 
@@ -32,4 +35,13 @@
 <h1>Em breve!</h1>
 <p>Aguarde…</p>
 {% endif %}
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+function avatarError (image) {
+	image.src = "{% static 'images/no-avatar.jpg' %}";
+	// image.onerror = '';
+}
+</script>
 {% endblock %}
