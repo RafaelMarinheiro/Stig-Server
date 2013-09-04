@@ -8,7 +8,7 @@ div.iphone {
 	background: url('../images/iphone.png') no-repeat;
 	width: 375px;
 	height: 806px;
-	padding: 148px 28px 111px 28px;
+	padding: 147px 27px 110px 27px;
 
 	-webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
 	-moz-box-sizing: border-box;    /* Firefox, other Gecko */
@@ -17,6 +17,11 @@ div.iphone {
 	/*position: absolute;*/
 	right: 0;
 	float: right;
+	overflow: hidden;
+}
+
+div.iphone img.screen {
+	width: 321px;
 }
 
 #comment {
