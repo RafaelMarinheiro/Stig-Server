@@ -42,7 +42,7 @@ div.iphone {
 }
 
 .sticker-money:before {
-	content: 'm';
+	content: 'c';
 }
 
 .sticker-food:before {
@@ -62,9 +62,9 @@ div.iphone {
 }
 
 .sticker-positive:before {
-	color: green;
+	color: #00af90;
 }
 
 .sticker-negative:before {
-	color: red;
+	color: #ff7171;
 }
