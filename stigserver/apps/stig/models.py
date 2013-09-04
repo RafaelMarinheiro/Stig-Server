@@ -100,14 +100,12 @@ class Place(models.Model):
 	def __unicode__(self):
 		return u"%s" % self.name
 
-	def get_sticker_relevance(self, is_sum = True):
+	def get_sticker_relevance(self):
 		stickers = Sticker.objects.all()
 		result = {}
 		for sticker in stickers:
-			if is_sum:
-				res = PlaceSticker.objects.filter(sticker=sticker, comment__place=self).aggregate(modifier_sum=Sum('modifier'))['modifier_sum']
-			else:
-				res = PlaceSticker.objects.filter(sticker=sticker, comment__place=self).aggregate(modifier_avg=Avg('modifier'))['modifier_avg']
+			res = PlaceSticker.objects.filter(sticker=sticker, comment__place=self).aggregate(modifier_sum=Sum('modifier'))['modifier_sum']
+			
 			if res is not None:
 				name_encoded = sticker.name.lower()
 				result[name_encoded] = res
@@ -124,7 +122,7 @@ class Place(models.Model):
 			'people': 0.3, # People
 		}
 
-		relevance = self.get_sticker_relevance(is_sum=False)
+		relevance = (PlaceSticker.objects.filter(sticker=sticker, comment__place=self, modifier=PlaceSticker.MODIFIER_GOOD).count()) / PlaceSticker.objects.filter(sticker=sticker, comment__place=self).count()
 		buzz = 0
 
 		for key in relevance:

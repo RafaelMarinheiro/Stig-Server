@@ -10,7 +10,7 @@ def home(request):
 	return render(request, 'frontend/home.html', context)
 
 def home_comment(request):
-	comment = Comment.objects.all().order_by('?')[0]
+	comment = Comment.objects.filter(~Q(content="")).order_by('?')[0]
 
 	stickers = []
 	for sticker in comment.placesticker_set.filter(~Q(modifier=0))[0:3]:
