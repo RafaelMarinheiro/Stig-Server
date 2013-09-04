@@ -30,9 +30,12 @@ class RankingField(serializers.Field):
 		if self.context['view'].request.auth is not None:
 			# Social
 			user = self.context['view'].request.auth
-			modifier_avg = PlaceSticker.objects.filter(comment__user__friends__pk=user.pk, comment__place=obj).aggregate(modifier_avg=Avg('modifier'))['modifier_avg']
-			if modifier_avg is None:
+			# modifier_avg = PlaceSticker.objects.filter(comment__user__friends__pk=user.pk, comment__place=obj).aggregate(modifier_avg=Avg('modifier'))['modifier_avg']
+			try:
+				modifier_avg = (PlaceSticker.objects.filter(comment__user__friends__pk=user.pk, comment__place=obj, modifier=PlaceSticker.MODIFIER_GOOD).count() / float(PlaceSticker.objects.filter(comment__user__friends__pk=user.pk, comment__place=obj).count()))
+			except ZeroDivisionError, e:
 				modifier_avg = 0
+
 			social = modifier_avg * 1000
 
 			ranking['social'] = social
