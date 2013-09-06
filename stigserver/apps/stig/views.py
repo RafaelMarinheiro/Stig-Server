@@ -73,7 +73,7 @@ class CommentsForPlace(generics.ListCreateAPIView):
 		place_pk = self.kwargs['place_pk']
 		try:
 			Place.objects.get(pk=place_pk)
-		except Exception, e:
+		except Place.DoesNotExist, e:
 			raise Http404
 		return self.queryset.filter(place__pk=place_pk)
 
@@ -106,7 +106,10 @@ class ThumbForComment(APIView):
 
 	def post(self, request, format=None, **kwargs):
 		if self.request.auth is not None:
-			comment = Comment.objects.get(pk=kwargs['comment_pk'])
+			try:
+				comment = Comment.objects.get(pk=kwargs['comment_pk'])
+			except Comment.DoesNotExist, e:
+				raise Http404
 			modifier = kwargs['modifier']
 
 			try:
@@ -135,13 +138,39 @@ class MySelf(APIView):
 		return Response({'error': 'You must athenticate.'}, status=status.HTTP_401_UNAUTHORIZED)
 
 
-class CheckinsForUser(generics.ListCreateAPIView):
+class CheckinAtPlace(APIView):
+	authentication_classes = (FacebookStigAuthentication, )
+	permission_classes = (FacebookStigPermission, )
+
+	def post(self, request, format=None, **kwargs):
+		if self.request.auth is not None:
+			try:
+				place = Place.objects.get(pk=kwargs['place_pk'])
+			except Place.DoesNotExist, e:
+				raise Http404
+
+			checkin = Checkin(place=place, user=self.request.auth)
+			checkin.save()
+			
+			return Response({'timestamp': checkin.timestamp}, status=status.HTTP_200_OK)
+
+		return Response({'error': 'You must athenticate.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class CheckinsForUser(generics.ListAPIView):
+	authentication_classes = (FacebookStigAuthentication, )
+	permission_classes = (FacebookStigPermission, )
+
 	queryset = Checkin.objects.all()
 	serializer_class = CheckinSerializer
 
 	def get_queryset(self):
 		user_pk = self.kwargs['user_pk']
-		return self.queryset.filter(user__pk=user_pk)
+		if (self.request.auth is not None) and (int(self.request.auth.pk) == int(user_pk)):
+			user_pk = self.kwargs['user_pk']
+			return self.queryset.filter(user__pk=user_pk)
+
+		raise Http404
 
 	def pre_save(self, obj):
 		obj.user_id = self.kwargs['user_pk']
