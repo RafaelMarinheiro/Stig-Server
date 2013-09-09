@@ -6,6 +6,8 @@ from django.db.models import Q
 # Create your views here.
 
 def home(request):
+	if not request.user.is_authenticated():
+		return redirect('http://fb.com/stigapp')
 	context = {}
 	return render(request, 'frontend/home.html', context)
 
