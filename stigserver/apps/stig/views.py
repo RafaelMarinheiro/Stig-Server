@@ -117,8 +117,11 @@ class ThumbForComment(APIView):
 			except Thumb.DoesNotExist, e:
 				thumb = Thumb(content_type=ContentType.objects.get(app_label='stig', model='comment'), object_id=comment.pk, user=self.request.auth)
 
-			thumb.modifier = modifier
-			thumb.save()
+			if thumb.modifier == modifier:
+				thumb.delete()
+			else:
+				thumb.modifier = modifier
+				thumb.save()
 			
 			return Response({'thumbs': comment.get_thumb_count()}, status=status.HTTP_200_OK)
 

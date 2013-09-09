@@ -1,4 +1,5 @@
-from models import StigUser, Place, Sticker, Comment, Checkin, PlaceSticker
+from models import StigUser, Place, Sticker, Comment, Checkin, PlaceSticker, Thumb
+from django.contrib.contenttypes.models import ContentType
 from rest_framework import serializers
 from rest_framework.parsers import JSONParser
 from rest_framework.reverse import reverse
@@ -14,6 +15,7 @@ class GeoPointField(serializers.WritableField):
 			data = dict(data)
 		return Point(data['lat'], data['lon'])
 
+
 class FriendsListField(serializers.Field):
 	def to_native(self, obj):
 		if self.context['view'].request.auth is not None:
@@ -21,6 +23,18 @@ class FriendsListField(serializers.Field):
 			friends = [f.pk for f in friends if f.get_place() == obj.pk]
 			return friends
 		return []
+
+
+class ThumbsByMeField(serializers.Field):
+	def to_native(self, obj):
+		if self.context['view'].request.auth is not None:
+			me = self.context['view'].request.auth
+			try:
+				thumb = Thumb.objects.get(content_type=ContentType.objects.get(app_label='stig', model='comment'), object_id=obj.pk, user=me)
+				return thumb.modifier
+			except Thumb.DoesNotExist, e:
+				return 0
+		return 0
 
 
 class RankingField(serializers.Field):
@@ -68,7 +82,7 @@ class PlaceSerializer(serializers.ModelSerializer):
 
 class CommentSerializer(serializers.ModelSerializer):
 	stickers = serializers.IntegerField(source='stickers')
-	# thumbs = serializers.Field(source='get_thumb_count')
+	thumbs_by_me = ThumbsByMeField(source='*')
 	likes = serializers.Field(source='get_thumb_up')
 	dislikes = serializers.Field(source='get_thumb_down')
 	place = serializers.PrimaryKeyRelatedField(required=False)
@@ -76,7 +90,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
 	class Meta:
 		model = Comment
-		fields = ('id', 'stickers', 'place', 'user', 'content', 'created_on', 'parent', 'likes', 'dislikes')
+		fields = ('id', 'stickers', 'place', 'user', 'content', 'created_on', 'parent', 'likes', 'dislikes', 'thumbs_by_me')
 
 	def validate(self, attrs):
 		if 'place' not in attrs.keys() or attrs['place'] is None:
