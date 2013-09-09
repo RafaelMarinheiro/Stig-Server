@@ -48,6 +48,7 @@ class UserSerializer(serializers.ModelSerializer):
 	first_name = serializers.CharField(read_only=True)
 	last_name = serializers.CharField(read_only=True)
 	avatar = serializers.CharField(read_only=True)
+	points = serializers.CharField(read_only=True)
 	access_token = serializers.CharField(source='access_token')
 
 	class Meta:

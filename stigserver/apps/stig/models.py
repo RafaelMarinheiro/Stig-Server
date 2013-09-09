@@ -14,7 +14,7 @@ class StigUser(models.Model):
 	avatar = models.URLField()
 	fb_id = models.CharField(max_length=20, unique=True)
 	friends = models.ManyToManyField('self')
-	points = models.IntegerField()
+	points = models.IntegerField(default=0)
 	_access_token = ''
 
 	def __unicode__(self):
