@@ -80,6 +80,7 @@ class PlaceSerializer(serializers.ModelSerializer):
 		model = Place
 		fields = ('id', 'name', 'image', 'description', 'location', 'stickers', 'ranking', 'friends')
 
+
 class CommentSerializer(serializers.ModelSerializer):
 	stickers = serializers.IntegerField(source='stickers')
 	thumbs_by_me = ThumbsByMeField(source='*')
