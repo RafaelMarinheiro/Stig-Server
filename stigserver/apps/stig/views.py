@@ -1,6 +1,6 @@
 # Create your views here.
 
-from rest_framework import viewsets, generics, permissions, authentication, status
+from rest_framework import viewsets, generics, permissions, authentication, status, mixins
 from serializers import UserSerializer, PlaceSerializer, CommentSerializer, CheckinSerializer
 from models import StigUser, Place, Sticker, Comment, Checkin, Thumb
 from django.http import Http404
@@ -13,6 +13,33 @@ from rest_framework.views import APIView
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.gis.geos import Point
 import re
+import hashlib
+from django.utils import simplejson
+
+def etag_for(data):
+	sha1 = hashlib.sha1()
+	sha1.update(simplejson.dumps(data))
+	return 'stig-%s' % sha1.hexdigest()
+
+def unicode_dict(data):
+	for key in data.keys():
+		if type(data[key]) is not dict:
+			data[key] = unicode(data[key])
+		else:
+			data[key] = unicode_dict(data[key])
+	return key
+
+def cached_response(request, response, ttl):
+	data = response.data.copy()
+	etag = etag_for(unicode_dict(data))
+	
+	if etag == request.META.get('HTTP_IF_NONE_MATCH', None):
+		response = Response({}, status=status.HTTP_304_NOT_MODIFIED)
+
+	response['ETag'] = etag
+	response['Cache-Control'] = 'max-age=%s' % ttl
+
+	return response
 
 class UserViewSet(viewsets.ModelViewSet):
 	authentication_classes = (FacebookStigAuthentication, )
@@ -20,8 +47,13 @@ class UserViewSet(viewsets.ModelViewSet):
 	queryset = StigUser.objects.all()
 	serializer_class = UserSerializer
 
-	# def get_queryset(self):
-	# 	return self.queryset.filter(Q(friends__pk=self.request.auth.pk))
+	def list(self, request, *args, **kwargs):
+		response = (super(viewsets.ModelViewSet, self)).list(request, *args, **kwargs)
+		return cached_response(request, response, 2*60)
+
+	def retrieve(self, request, *args, **kwargs):
+		response = (super(viewsets.ModelViewSet, self)).retrieve(request, *args, **kwargs)
+		return cached_response(request, response, 2*60)
 
 
 class PlaceViewSet(viewsets.ModelViewSet):
@@ -44,6 +76,14 @@ class PlaceViewSet(viewsets.ModelViewSet):
 			point = Point(float(lon), float(lat))
 			queryset = self.queryset.distance(point).order_by('distance')
 		return queryset
+
+	def list(self, request, *args, **kwargs):
+		response = (super(viewsets.ModelViewSet, self)).list(request, *args, **kwargs)
+		return cached_response(request, response, 2*60)
+
+	def retrieve(self, request, *args, **kwargs):
+		response = (super(viewsets.ModelViewSet, self)).retrieve(request, *args, **kwargs)
+		return cached_response(request, response, 2*60)
 
 
 class CommentsForPlace(generics.ListCreateAPIView):
@@ -85,6 +125,15 @@ class CommentsForPlace(generics.ListCreateAPIView):
 		else:
 			return Response({'error': 'You must athenticate.'}, status=status.HTTP_401_UNAUTHORIZED)
 
+	def list(self, request, *args, **kwargs):
+		response = (super(generics.ListCreateAPIView, self)).list(request, *args, **kwargs)
+		return cached_response(request, response, 1*60)
+
+	def retrieve(self, request, *args, **kwargs):
+		response = (super(generics.ListCreateAPIView, self)).retrieve(request, *args, **kwargs)
+		return cached_response(request, response, 1*60)
+
+
 
 class RepliesForComment(generics.ListCreateAPIView):
 	queryset = Comment.objects.all()
@@ -94,10 +143,22 @@ class RepliesForComment(generics.ListCreateAPIView):
 		parent_pk = self.kwargs['parent_pk']
 		return self.queryset.filter(parent__pk=parent_pk)
 
+	def list(self, request, *args, **kwargs):
+		response = (super(generics.ListCreateAPIView, self)).list(request, *args, **kwargs)
+		return cached_response(request, response, 1*60)
+
+	def retrieve(self, request, *args, **kwargs):
+		response = (super(generics.ListCreateAPIView, self)).retrieve(request, *args, **kwargs)
+		return cached_response(request, response, 1*60)
+
 
 class CommentDetail(generics.RetrieveUpdateDestroyAPIView):
 	queryset = Comment.objects.all()
 	serializer_class = CommentSerializer
+
+	def retrieve(self, request, *args, **kwargs):
+		response = (super(generics.RetrieveUpdateDestroyAPIView, self)).retrieve(request, *args, **kwargs)
+		return cached_response(request, response, 1*60)
 
 
 class ThumbForComment(APIView):
@@ -136,7 +197,8 @@ class MySelf(APIView):
 		if self.request.auth is not None:
 			serializer = UserSerializer(self.request.auth)
 			
-			return Response(serializer.data, status=status.HTTP_200_OK)
+			response = Response(serializer.data, status=status.HTTP_200_OK)
+			return cached_response(request, response, 3*60)
 
 		return Response({'error': 'You must athenticate.'}, status=status.HTTP_401_UNAUTHORIZED)
 
@@ -177,3 +239,7 @@ class CheckinsForUser(generics.ListAPIView):
 
 	def pre_save(self, obj):
 		obj.user_id = self.kwargs['user_pk']
+
+	def list(self, request, *args, **kwargs):
+		response = (super(generics.ListAPIView, self)).list(request, *args, **kwargs)
+		return cached_response(request, response, 1*60)
