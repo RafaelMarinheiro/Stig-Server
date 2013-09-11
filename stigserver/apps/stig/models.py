@@ -6,8 +6,17 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.db import transaction
 from django.db.models import signals
+from datetime import datetime, timedelta
 
 # Create your models here.
+class FacebookAccessToken(models.Model):
+	user = models.ForeignKey('StigUser')
+	access_token = models.TextField()
+	trust_until = models.DateTimeField()
+
+	def __unicode__(self):
+		return u"Token for %s trusted until %s" % (self.user, self.trust_until)
+
 class StigUser(models.Model):
 	first_name = models.CharField(max_length=50)
 	last_name = models.CharField(max_length=50)
@@ -66,12 +75,26 @@ class StigUser(models.Model):
 
 	def check_access_token(self, access_token):
 		try:
-			graph = OpenFacebook(access_token)
-			me = graph.get('me', fields='id')
+			token = FacebookAccessToken.objects.get(user=self, access_token=access_token, trust_until__gte=datetime.now())
+			valid = True
+		except FacebookAccessToken.DoesNotExist, e:
+			try:
+				graph = OpenFacebook(access_token)
+				me = graph.get('me', fields='id')
 
-			return self.fb_id == me['id']
-		except Exception, e:
-			return False
+				if self.fb_id == me['id']:
+					token = FacebookAccessToken(user=self, access_token=access_token, trust_until=datetime.now() + timedelta(0, 10*60))
+					token.save()
+					valid = True
+				else:
+					valid = False
+			except Exception, e:
+				valid = False
+
+		to_delete = FacebookAccessToken.objects.filter(trust_until__lt=datetime.now())
+		to_delete.delete()
+
+		return valid
 
 	def can_see_details(self, other):
 		return (self.pk == other.pk) or (self.pk in [f.pk for f in other.friends.all()])
