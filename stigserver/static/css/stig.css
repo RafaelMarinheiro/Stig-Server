@@ -4,6 +4,12 @@ h1.logo {
 	height: 265px;
 }
 
+div.home-links {
+	/*float: right;*/
+	/*text-align: right;*/
+	margin-top: 20px;
+}
+
 div.iphone {
 	background: url('../images/iphone.png') no-repeat;
 	width: 375px;
@@ -16,7 +22,7 @@ div.iphone {
 
 	/*position: absolute;*/
 	right: 0;
-	float: right;
+	/*float: right;*/
 	overflow: hidden;
 }
 
@@ -25,7 +31,7 @@ div.iphone img.screen {
 }
 
 #comment {
-	margin-top: 300px;
+	margin-top: 40px;
 }
 
 #comment div.photo {
@@ -36,6 +42,11 @@ div.iphone img.screen {
 
 #comment img.photo {
 	width: 50px;
+}
+
+#comment p.comment-stickers {
+	text-align: center;
+	font-size: 1.2em;
 }
 
 .sticker:before {
@@ -72,4 +83,20 @@ div.iphone img.screen {
 
 .sticker-negative:before {
 	color: #ff7171;
+}
+
+span.stig {
+	font-weight: 500;
+	color: rgb(55, 55, 55);
+}
+
+#take-action {
+	margin-top: 40px;
+}
+
+div.comment-explanation {
+	font-size: 1.7em;
+	text-align: center;
+	margin-top: 30px;
+	margin-bottom: 30px;
 }

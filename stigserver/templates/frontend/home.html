@@ -5,69 +5,117 @@
 
 {% if user.is_authenticated %}
 
-<div class="iphone">
-	<div id="iphone-carousel" class="carousel slide">
-		<ol class="carousel-indicators">
-			<li data-target="#iphone-carousel" data-slide-to="0" class="active"></li>
-			<li data-target="#iphone-carousel" data-slide-to="1"></li>
-			<li data-target="#iphone-carousel" data-slide-to="2"></li>
-			<li data-target="#iphone-carousel" data-slide-to="3"></li>
-		</ol>
-
-		<div class="carousel-inner">
-			<div class="item active">
-				<img src="{% static 'images/screenshots/map1.jpg' %}" alt="Stig" class="screen" />
+<div class="row">
+	<div class="col-md-7">
+		<div class="row">
+			<div class="col-md-10">
+				<h1 class="logo"><span class="sr-only">Stig</span></h1>
+				<p class="sr-only">Saia para o melhor lugar</p>
 			</div>
-			<div class="item">
-				<img src="{% static 'images/screenshots/map2.jpg' %}" alt="Stig" class="screen" />
-			</div>
-			<div class="item">
-				<img src="{% static 'images/screenshots/place1.jpg' %}" alt="Stig" class="screen" />
-			</div>
-			<div class="item">
-				<img src="{% static 'images/screenshots/comment1.jpg' %}" alt="Stig" class="screen" />
+			<div class="col-md-2">
+				<div class="home-links">
+					<!-- <p><img src="{% static 'images/app-store.svg' %}" alt="Disponível na App Store" /></p> -->
+					<p><div class="fb-like pull-right" data-href="http://www.facebook.com/stigapp" data-width="450" data-layout="box_count" data-show-faces="true" data-send="false"></div></p>
+				</div>
 			</div>
 		</div>
 
-		<a class="left carousel-control" href="#iphone-carousel" data-slide="prev">
-		    <span class="icon-prev"></span>
-		</a>
+		<!--
+		<p class="home-links">
+			<img src="{% static 'images/app-store.svg' %}" alt="Disponível na App Store" />
+			Facebook
+		</p>
+		-->
 
-		<a class="right carousel-control" href="#iphone-carousel" data-slide="next">
-		    <span class="icon-next"></span>
-		</a>
+		<div id="take-action">
+			<h2>Eu quero sair!</h2>
+			<p>Que tal sair sempre para o lugar certo? Saber sobre <strong>filas</strong>, <strong>preços</strong>, e mais? Deixe seu email e a gente te avisa quando o <span class="stig">Stig</span> estiver disponível para baixar!</p>
+			<form action="#" role="form">
+				<div class="form-group">
+					<label for="take-action-email">Seu email</label>
+					<div class="input-group">
+						<span class="input-group-addon"><span class="glyphicon glyphicon-envelope"></span></span>
+						<input type="email" class="form-control input-lg" id="take-action-email" placeholder="joao@stigapp.co" />
+						<span class="input-group-btn"><button class="btn btn-warning btn-lg" type="button">Manda!</button></span>
+					</div>
+				</div>
+			</form>
+		</div>
+
+		{% verbatim %}
+		<div id="comment" ng-controller="CommentCtrl">
+			<h2>Como vai funcionar?</h2>
+			<p>O <span class="stig">Stig</span> te dá <strong>informações em tempo real</strong> sobre os locais para sair à noite, com comentários de pessoas como você! Os comentátios possuem <strong>Stickers</strong>, que são <em>#hashtags</em> sobre:</p>
+			
+			<div class="row comment-explanation">
+				<div class="col-md-4 col-sm-6 col-xs-6"><span class="sticker sticker-money"></span> Preço</div>
+				<div class="col-md-4 col-sm-6 col-xs-6"><span class="sticker sticker-queue"></span> Fila</div>
+				<div class="col-md-4 col-sm-6 col-xs-6"><span class="sticker sticker-accessibility"></span> Acessibilidade</div>
+				<div class="col-md-4 col-sm-6 col-xs-6"><span class="sticker sticker-food"></span> Bebida</div>
+				<div class="col-md-4 col-sm-6 col-xs-6"><span class="sticker sticker-music"></span> Música</div>
+				<div class="col-md-4 col-sm-6 col-xs-6"><span class="sticker sticker-people"></span> Pessoas</div>
+			</div>
+
+			<h3>Tipo assim:</h3>
+			<div class="well">
+				<div class="media">
+					<div class="pull-left">
+						<div class="media-object photo">
+							<img class="photo" src="{{comment.photo}}" alt="{{comment.name}}" onerror="avatarError(this);" />
+						</div>
+						<p class="comment-stickers">
+							<span ng-repeat="sticker in comment.stickers"><span class="sticker sticker-{{sticker.name}} sticker-{{sticker.modifier}}"></span></span>&nbsp;
+						</p>
+					</div>
+
+					<div class="media-body">
+						<h4 class="media-heading">{{comment.name}} &nbsp;&rsaquo;&nbsp; {{comment.place}}</h4>
+						<p>{{comment.comment}}</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		{% endverbatim %}
 	</div>
-	
-</div>
-<h1 class="logo"><span class="sr-only">Stig</span></h1>
-<p class="sr-only">Saia para o melhor lugar</p>
+	<div class="col-md-5">
+		<h2 class="visible-xs">Demonstração</h2>
+		<div class="iphone">
+			<div id="iphone-carousel" class="carousel slide">
+				<ol class="carousel-indicators">
+					<li data-target="#iphone-carousel" data-slide-to="0" class="active"></li>
+					<li data-target="#iphone-carousel" data-slide-to="1"></li>
+					<li data-target="#iphone-carousel" data-slide-to="2"></li>
+					<li data-target="#iphone-carousel" data-slide-to="3"></li>
+				</ol>
 
-<p class="home-links">
-	<img src="{% static 'images/app-store.svg' %}" alt="Disponível na App Store" />
-	Facebook
-</p>
+				<div class="carousel-inner">
+					<div class="item active">
+						<img src="{% static 'images/screenshots/map1.jpg' %}" alt="Stig" class="screen" />
+					</div>
+					<div class="item">
+						<img src="{% static 'images/screenshots/map2.jpg' %}" alt="Stig" class="screen" />
+					</div>
+					<div class="item">
+						<img src="{% static 'images/screenshots/place1.jpg' %}" alt="Stig" class="screen" />
+					</div>
+					<div class="item">
+						<img src="{% static 'images/screenshots/comment1.jpg' %}" alt="Stig" class="screen" />
+					</div>
+				</div>
 
-{% verbatim %}
-<div id="comment" ng-controller="CommentCtrl">
-	<div class="media">
-		<div class="pull-left">
-			<div class="media-object photo">
-				<img class="photo" src="{{comment.photo}}" alt="{{comment.name}}" onerror="avatarError(this);" />
+				<!--
+				<a class="left carousel-control" href="#iphone-carousel" data-slide="prev">
+				    <span class="icon-prev"></span>
+				</a>
+
+				<a class="right carousel-control" href="#iphone-carousel" data-slide="next">
+				    <span class="icon-next"></span>
+				</a>
+				-->
 			</div>
-			<p style="text-align: center">
-				<span ng-repeat="sticker in comment.stickers">
-					<span class="sticker sticker-{{sticker.name}} sticker-{{sticker.modifier}}"></span> 
-				</span>
-			</p>
-		</div>
-
-		<div class="media-body">
-			<h4 class="media-heading">{{comment.name}} &nbsp;&rsaquo;&nbsp; {{comment.place}}</h4>
-			<p>{{comment.comment}}</p>
 		</div>
 	</div>
 </div>
-{% endverbatim %}
 
 {% else %}
 <h1>Em breve!</h1>
