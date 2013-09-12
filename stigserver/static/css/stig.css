@@ -91,12 +91,16 @@ span.stig {
 }
 
 #take-action {
-	margin-top: 40px;
+	margin-top: 30px;
 }
 
 div.comment-explanation {
-	font-size: 1.7em;
+	font-size: 1.5em;
 	text-align: center;
-	margin-top: 30px;
+	margin-top: 20px;
 	margin-bottom: 30px;
+}
+
+div.comment-explanation .sticker {
+	font-size: 1.6em;
 }

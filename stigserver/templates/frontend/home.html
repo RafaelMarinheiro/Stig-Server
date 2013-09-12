@@ -15,7 +15,7 @@
 			<div class="col-md-2">
 				<div class="home-links">
 					<!-- <p><img src="{% static 'images/app-store.svg' %}" alt="Disponível na App Store" /></p> -->
-					<p><div class="fb-like pull-right" data-href="http://www.facebook.com/stigapp" data-width="450" data-layout="box_count" data-show-faces="true" data-send="false"></div></p>
+					<div class="hidden-xs"></div>
 				</div>
 			</div>
 		</div>
@@ -27,35 +27,23 @@
 		</p>
 		-->
 
-		<div id="take-action">
-			<h2>Eu quero sair!</h2>
-			<p>Que tal sair sempre para o lugar certo? Saber sobre <strong>filas</strong>, <strong>preços</strong>, e mais? Deixe seu email e a gente te avisa quando o <span class="stig">Stig</span> estiver disponível para baixar!</p>
-			<form action="#" role="form">
-				<div class="form-group">
-					<label for="take-action-email">Seu email</label>
-					<div class="input-group">
-						<span class="input-group-addon"><span class="glyphicon glyphicon-envelope"></span></span>
-						<input type="email" class="form-control input-lg" id="take-action-email" placeholder="joao@stigapp.co" />
-						<span class="input-group-btn"><button class="btn btn-warning btn-lg" type="button">Manda!</button></span>
-					</div>
-				</div>
-			</form>
-		</div>
+		
 
 		{% verbatim %}
 		<div id="comment" ng-controller="CommentCtrl">
 			<h2>Como vai funcionar?</h2>
-			<p>O <span class="stig">Stig</span> te dá <strong>informações em tempo real</strong> sobre os locais para sair à noite, com comentários de pessoas como você! Os comentátios possuem <strong>Stickers</strong>, que são <em>#hashtags</em> sobre:</p>
+			<p>O <span class="stig">Stig</span> te dá <strong>informações em tempo real</strong> sobre os locais para sair à noite, com comentários de pessoas como você! Assim, você pode saber informações sobre:</p>
 			
 			<div class="row comment-explanation">
-				<div class="col-md-4 col-sm-6 col-xs-6"><span class="sticker sticker-money"></span> Preço</div>
-				<div class="col-md-4 col-sm-6 col-xs-6"><span class="sticker sticker-queue"></span> Fila</div>
-				<div class="col-md-4 col-sm-6 col-xs-6"><span class="sticker sticker-accessibility"></span> Acessibilidade</div>
-				<div class="col-md-4 col-sm-6 col-xs-6"><span class="sticker sticker-food"></span> Bebida</div>
-				<div class="col-md-4 col-sm-6 col-xs-6"><span class="sticker sticker-music"></span> Música</div>
-				<div class="col-md-4 col-sm-6 col-xs-6"><span class="sticker sticker-people"></span> Pessoas</div>
+				<div class="col-md-4 col-sm-6 col-xs-6"><span class="sticker sticker-money"></span><br />Preço</div>
+				<div class="col-md-4 col-sm-6 col-xs-6"><span class="sticker sticker-queue"></span><br />Fila</div>
+				<div class="col-md-4 col-sm-6 col-xs-6"><span class="sticker sticker-accessibility"></span><br />Acessibilidade</div>
+				<div class="col-md-4 col-sm-6 col-xs-6"><span class="sticker sticker-food"></span><br />Bebida</div>
+				<div class="col-md-4 col-sm-6 col-xs-6"><span class="sticker sticker-music"></span><br />Música</div>
+				<div class="col-md-4 col-sm-6 col-xs-6"><span class="sticker sticker-people"></span><br />Pessoas</div>
 			</div>
 
+			<!--
 			<h3>Tipo assim:</h3>
 			<div class="well">
 				<div class="media">
@@ -74,8 +62,24 @@
 					</div>
 				</div>
 			</div>
+			-->
 		</div>
 		{% endverbatim %}
+
+		<div id="take-action">
+			<h2>Eu quero!</h2>
+			<p>Que tal sair sempre para o lugar certo? Saber sobre <strong>filas</strong>, <strong>preços</strong>, e mais? Deixe seu email e a gente te avisa quando o <span class="stig">Stig</span> estiver disponível para baixar!</p>
+			<form action="#" role="form">
+				<div class="form-group">
+					<label for="take-action-email">Seu email</label>
+					<div class="input-group">
+						<span class="input-group-addon"><span class="glyphicon glyphicon-envelope"></span></span>
+						<input type="email" class="form-control input-lg" id="take-action-email" placeholder="joao@stigapp.co" />
+						<span class="input-group-btn"><button class="btn btn-warning btn-lg" type="button">Manda!</button></span>
+					</div>
+				</div>
+			</form>
+		</div>
 	</div>
 	<div class="col-md-5">
 		<h2 class="visible-xs">Demonstração</h2>
