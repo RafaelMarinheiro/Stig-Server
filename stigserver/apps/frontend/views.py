@@ -2,8 +2,10 @@ from django.shortcuts import render, redirect, HttpResponse
 from stigserver.apps.stig.models import Comment
 from django.utils import simplejson
 from django.db.models import Q
-
-# Create your views here.
+from rest_framework import status
+from models import *
+from django.db import IntegrityError
+from django import forms
 
 def home(request):
 	if not request.user.is_authenticated():
@@ -12,7 +14,8 @@ def home(request):
 	return render(request, 'frontend/home.html', context)
 
 def home_comment(request):
-	comment = Comment.objects.filter(~Q(content="")).order_by('?')[0]
+	safe_ids = [8, 16, 25, 31, 64, 76, 130, 157]
+	comment = Comment.objects.filter(~Q(content="")).filter(pk__in[safe_ids]).order_by('?')[0]
 
 	stickers = []
 	for sticker in comment.placesticker_set.filter(~Q(modifier=0))[0:3]:
@@ -29,3 +32,27 @@ def home_comment(request):
 		'stickers': stickers,
 	}
 	return HttpResponse(simplejson.dumps(obj))
+
+def home_save_contact(request):
+	class SaveContactForm(forms.Form):
+		email = forms.EmailField()
+
+	form = SaveContactForm(request.POST)
+	if form.is_valid():
+		email = form.cleaned_data['email']
+		try:
+			contact = Contact(email=email)
+			contact.save()
+
+			code = status.HTTP_200_OK
+			content = {"email": contact.email, "timestamp": contact.timestamp.strftime("%c")}
+		except IntegrityError, e:
+			code = status.HTTP_400_BAD_REQUEST
+			content = {"error": "You must inform an unique email address.", "internal_code": 1}
+	else:
+		code = status.HTTP_400_BAD_REQUEST
+		content = {"error": "Invalid email address.", "internal_code": 2}
+
+	
+
+	return HttpResponse(simplejson.dumps(content), code)

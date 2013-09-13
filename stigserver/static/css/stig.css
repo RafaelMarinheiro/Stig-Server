@@ -116,3 +116,11 @@ div.comment-explanation .sticker {
 #card-about {
 	background: #ddd;
 }
+
+#take-action-modal .second, #take-action-modal .third {
+	display: none;
+}
+
+#take-action-modal .modal-body {
+	height: 180px;
+}
