@@ -1,3 +1,7 @@
+body {
+	background-color: #fdfdfd;
+}
+
 h1.logo {
 	background: url('../images/stig-logo.png') no-repeat;
 	width: 464px;
@@ -24,6 +28,7 @@ div.iphone {
 	right: 0;
 	/*float: right;*/
 	overflow: hidden;
+	margin-bottom: 20px;
 }
 
 div.iphone img.screen {
@@ -52,6 +57,9 @@ div.iphone img.screen {
 #comment div.well {
 	height: 180px;
 	overflow: hidden;
+	/*color: rgb(55,55,55);*/
+	background-color: #444;
+	border-color: #444;
 	/*max-width: 600px;*/
 	/*margin-right: auto;*/
 	/*margin-left: auto;*/
@@ -95,7 +103,7 @@ div.iphone img.screen {
 
 span.stig {
 	font-weight: 500;
-	color: rgb(55, 55, 55);
+	color: #ffce18;
 }
 
 #take-action {
@@ -114,8 +122,21 @@ div.comment-explanation .sticker {
 }
 
 #card-about {
-	background: #ddd;
+	/*background: #ddd;*/
+	background: rgb(51,51,51);
+	color: #ddd;
 }
+
+#card-home, #card-contact {
+	/*background: rgb(51,51,51);*/
+	/*color: #fff;*/
+}
+
+#card-home .container, #card-contact .container, #card-about .container {
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
 
 #take-action-modal .second, #take-action-modal .third {
 	display: none;
@@ -123,4 +144,16 @@ div.comment-explanation .sticker {
 
 #take-action-modal .modal-body {
 	height: 180px;
+}
+
+#top-navigation {
+	background: rgba(8, 8, 8, 0.85);
+}
+
+#top-navigation li {
+	/*background: rgba(246, 246, 246, 0.8);*/
+}
+
+#top-navigation li.active a {
+	/*background: rgba(247, 247, 247, 0.93);*/
 }

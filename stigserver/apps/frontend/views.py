@@ -8,8 +8,8 @@ from django.db import IntegrityError
 from django import forms
 
 def home(request):
-	if not request.user.is_authenticated():
-		return redirect('http://fb.com/stigapp')
+	# if not request.user.is_authenticated():
+	# 	return redirect('http://fb.com/stigapp')
 	context = {}
 	return render(request, 'frontend/home.html', context)
 
