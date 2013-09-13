@@ -9,12 +9,13 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-sm-8">
-				<h1 class="logo"><span class="sr-only">Stig</span></h1>
+				<h1 class="logo sr-only"><span class="sr-only">Stig</span></h1>
 				<p class="sr-only">Saia para o lugar certo!</p>
+				<img src="{% static 'images/stig-logo.png' %}" alt="Stig" class="img-responsive" />
 
 				<div id="take-action">
 					<p class="lead">Que tal sair sempre para o lugar certo? Saber sobre <strong>filas</strong>, <strong>preços</strong>, e mais? O <span class="stig">Stig</span> te ajuda!</p>
-					<p><button type="button" class="btn btn-primary btn-lg" data-toggle="modal" href="#take-action-modal">Eu quero!</button> &nbsp; <button type="button" class="btn btn-default btn-lg" onclick="goToCard('about');">Saiba mais…</button></p>
+					<p><button type="button" class="btn btn-primary btn-lg" data-toggle="modal" href="#take-action-modal">Eu quero!</button> &nbsp; <button type="button" class="btn btn-default btn-lg" onclick="goToCard('about');">Saiba mais</button> &nbsp; <button type="button" class="btn btn-default btn-lg" onclick="goToCard('contact');">Entre em contato</button></p>
 				</div>
 			</div>
 			<div class="col-sm-4">
@@ -68,7 +69,16 @@
 				</div>
 			</div>
 		</div>
+		<p class="text-muted">As informações acima foram postadas por usuários de testes do <span class="stig">Stig</span> e podem não refletir a opinião dos criadores.</p>
 		{% endverbatim %}
+	</div>
+</div>
+
+<div id="card-contact">
+	<div class="container">
+		<h2>Entre em contato!</h2>
+		<p class="lead">Quer conversar com a galera que faz o <span class="stig">Stig</span>? Manda um email para a gente!</p>
+		<p><a href="mailto:contact@stigapp.co" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-envelope"></span> contact@stigapp.co</a></p>
 	</div>
 </div>
 
@@ -80,17 +90,27 @@
 				<h2 class="modal-title">O <span class="stig">Stig</span> está chegando!</h2>
 			</div>
 			<div class="modal-body">
-				<p>Em alguns dias, o <span class="stig">Stig</span> estará disponível para baixar. Deixe seu email abaixo e vamos te deixar por dentro do lançamento!</p>
-				<form action="#" role="form">
-					<div class="form-group">
-						<label for="take-action-email">Seu email</label>
-						<div class="input-group">
-							<span class="input-group-addon"><span class="glyphicon glyphicon-envelope"></span></span>
-							<input type="email" class="form-control input-lg" id="take-action-email" placeholder="joao@stigapp.co" />
-							<span class="input-group-btn"><button class="btn btn-primary btn-lg" type="button">Manda!</button></span>
+				<div class="first">
+					<p>Em alguns dias, o <span class="stig">Stig</span> estará disponível para baixar. Deixe seu email abaixo e vamos te deixar por dentro do lançamento!</p>
+					<form action="#" role="form">
+						<div class="form-group" id="take-action-email-group">
+							<label for="take-action-email">Seu email</label>
+							<div class="input-group">
+								<span class="input-group-addon"><span class="glyphicon glyphicon-envelope"></span></span>
+								<input type="email" class="form-control input-lg" id="take-action-email" placeholder="joao@stigapp.co" required="required" />
+								<span class="input-group-btn"><button class="btn btn-primary btn-lg" type="button" onclick="saveContact();">Manda!</button></span>
+							</div>
 						</div>
-					</div>
-				</form>
+					</form>
+				</div>
+				<div class="second">
+					<p style="text-align: center"><img src="{% static 'images/loader.gif' %}" alt="Loading…" /></p>
+				</div>
+				<div class="third">
+					<p class="lead"><strong>Pronto!</strong> Assim que tivermos novidades do <span class="stig">Stig</span>, você será o primeiro a saber.</p>
+
+					<button type="button" class="btn btn-primary" onclick="resetContactModal();">Cadastrar outro email</button>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -110,10 +130,101 @@ function avatarError (image) {
 	// image.onerror = '';
 }
 
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie != '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+var csrftoken;
+var fadeTime = 500;
+
+function resetContactModal () {
+	$('#take-action-email').val('');
+	$('take-action-email-group').removeClass('has-error');
+
+	$('#take-action-modal .second').fadeOut(fadeTime);
+	$('#take-action-modal .third').fadeOut(fadeTime);
+
+	setTimeout(function () {
+		$('#take-action-modal .first').fadeIn(fadeTime);
+	}, fadeTime+10);
+}
+
+function saveContact () {
+	email = $('#take-action-email').val();
+	if (email == '') {
+		$('#take-action-email-group').addClass('has-error');
+		return;
+	}
+	$.ajax('{% url 'home_save_contact' %}', {
+		data: {
+			email: email
+		},
+		type: 'POST',
+		success: function (data, jqXHR) {
+			setTimeout(function () {
+				data = JSON.parse(data);
+				if (data['error'] != undefined) {
+					var msg = '';
+					if (data['internal_code'] == 1) {
+						msg = 'Esse email já está cadastrado ou é inválido.';
+					} else {
+						msg = 'Esse email é inválido.';
+					}
+
+					alert(msg);
+					
+					resetContactModal();
+					return;
+				}
+
+				$('#take-action-modal .first').hide();
+				$('#take-action-modal .second').fadeOut(fadeTime);
+				setTimeout(function () {
+					$('#take-action-modal .third').fadeIn(fadeTime);
+				},fadeTime+10);
+			},2000);
+			console.log(data);
+		},
+		error: function (jqXHR, textStatus, errorThrown) {
+			alert('Um erro aconteceu!');
+			console.log(jqXHR);
+			console.log(textStatus);
+			console.log(errorThrown);
+
+			resetContactModal();
+		},
+		beforeSend: function (xhr, settings) {
+			if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url)) {
+		       xhr.setRequestHeader("X-CSRFToken", csrftoken);
+		    }
+
+			$('#take-action-modal .first').fadeOut(fadeTime);
+			setTimeout(function () {
+				$('#take-action-modal .second').fadeIn(fadeTime);
+			}, fadeTime+10);
+			
+			$('#take-action-modal .third').hide();
+		}
+	});
+}
+
 function resizeCards () {
 	var cards = [
 		'home',
 		'about',
+		'contact',
 	];
 
 	var windowHeight = $(window).height();
@@ -135,7 +246,24 @@ function goToCard (card) {
 	$.scrollTo($('#card-' + card), 500);
 }
 
+function csrfSafeMethod(method) {
+    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+}
+
+function sameOrigin(url) {
+    var host = document.location.host; // host + port
+    var protocol = document.location.protocol;
+    var sr_origin = '//' + host;
+    var origin = protocol + sr_origin;
+    return (url == origin || url.slice(0, origin.length + 1) == origin + '/') ||
+        (url == sr_origin || url.slice(0, sr_origin.length + 1) == sr_origin + '/') ||
+        !(/^(\/\/|http:|https:).*/.test(url));
+}
+
 $(document).ready(function () {
+	csrftoken = getCookie('csrftoken');
+
+
 	$(window).resize(function () {
 		resizeCards();
 	});
