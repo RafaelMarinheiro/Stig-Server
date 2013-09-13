@@ -12,7 +12,7 @@ function CommentCtrl ($scope, $timeout, $http) {
 			// var comment = JSON.parse(data);
 	        $scope.comment = data;
 	    });
-		$timeout(updateComment, 5000);
+		$timeout(updateComment, 6500);
 	}
 
 	$timeout(updateComment, 1);

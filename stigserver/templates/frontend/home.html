@@ -5,121 +5,97 @@
 
 {% if user.is_authenticated %}
 
-<div class="row">
-	<div class="col-md-7">
+<div id="card-home">
+	<div class="container">
 		<div class="row">
-			<div class="col-md-10">
+			<div class="col-sm-8">
 				<h1 class="logo"><span class="sr-only">Stig</span></h1>
-				<p class="sr-only">Saia para o melhor lugar</p>
-			</div>
-			<div class="col-md-2">
-				<div class="home-links">
-					<!-- <p><img src="{% static 'images/app-store.svg' %}" alt="Disponível na App Store" /></p> -->
-					<div class="hidden-xs"></div>
+				<p class="sr-only">Saia para o lugar certo!</p>
+
+				<div id="take-action">
+					<p class="lead">Que tal sair sempre para o lugar certo? Saber sobre <strong>filas</strong>, <strong>preços</strong>, e mais? O <span class="stig">Stig</span> te ajuda!</p>
+					<p><button type="button" class="btn btn-primary btn-lg" data-toggle="modal" href="#take-action-modal">Eu quero!</button> &nbsp; <button type="button" class="btn btn-default btn-lg" onclick="goToCard('about');">Saiba mais…</button></p>
 				</div>
 			</div>
-		</div>
-
-		<!--
-		<p class="home-links">
-			<img src="{% static 'images/app-store.svg' %}" alt="Disponível na App Store" />
-			Facebook
-		</p>
-		-->
-
-		
-
-		{% verbatim %}
-		<div id="comment" ng-controller="CommentCtrl">
-			<h2>Como vai funcionar?</h2>
-			<p>O <span class="stig">Stig</span> te dá <strong>informações em tempo real</strong> sobre os locais para sair à noite, com comentários de pessoas como você! Assim, você pode saber informações sobre:</p>
-			
-			<div class="row comment-explanation">
-				<div class="col-md-4 col-sm-6 col-xs-6"><span class="sticker sticker-money"></span><br />Preço</div>
-				<div class="col-md-4 col-sm-6 col-xs-6"><span class="sticker sticker-queue"></span><br />Fila</div>
-				<div class="col-md-4 col-sm-6 col-xs-6"><span class="sticker sticker-accessibility"></span><br />Acessibilidade</div>
-				<div class="col-md-4 col-sm-6 col-xs-6"><span class="sticker sticker-food"></span><br />Bebida</div>
-				<div class="col-md-4 col-sm-6 col-xs-6"><span class="sticker sticker-music"></span><br />Música</div>
-				<div class="col-md-4 col-sm-6 col-xs-6"><span class="sticker sticker-people"></span><br />Pessoas</div>
-			</div>
-
-			<!--
-			<h3>Tipo assim:</h3>
-			<div class="well">
-				<div class="media">
-					<div class="pull-left">
-						<div class="media-object photo">
-							<img class="photo" src="{{comment.photo}}" alt="{{comment.name}}" onerror="avatarError(this);" />
-						</div>
-						<p class="comment-stickers">
-							<span ng-repeat="sticker in comment.stickers"><span class="sticker sticker-{{sticker.name}} sticker-{{sticker.modifier}}"></span></span>&nbsp;
-						</p>
-					</div>
-
-					<div class="media-body">
-						<h4 class="media-heading">{{comment.name}} &nbsp;&rsaquo;&nbsp; {{comment.place}}</h4>
-						<p>{{comment.comment}}</p>
-					</div>
+			<div class="col-sm-4">
+				<div class="hidden-xs">
+					<div class="fb-like-box pull-right" data-href="https://www.facebook.com/stigapp" data-width="250" data-height="400" data-show-faces="true" data-header="false" data-stream="true" data-show-border="false"></div>
 				</div>
-			</div>
-			-->
-		</div>
-		{% endverbatim %}
-
-		<div id="take-action">
-			<h2>Eu quero!</h2>
-			<p>Que tal sair sempre para o lugar certo? Saber sobre <strong>filas</strong>, <strong>preços</strong>, e mais? Deixe seu email e a gente te avisa quando o <span class="stig">Stig</span> estiver disponível para baixar!</p>
-			<form action="#" role="form">
-				<div class="form-group">
-					<label for="take-action-email">Seu email</label>
-					<div class="input-group">
-						<span class="input-group-addon"><span class="glyphicon glyphicon-envelope"></span></span>
-						<input type="email" class="form-control input-lg" id="take-action-email" placeholder="joao@stigapp.co" />
-						<span class="input-group-btn"><button class="btn btn-warning btn-lg" type="button">Manda!</button></span>
-					</div>
+				<div class="visible-xs">
+					<div class="fb-like" data-href="https://www.facebook.com/stigapp" data-width="300" data-show-faces="true" data-send="false"></div>
 				</div>
-			</form>
-		</div>
-	</div>
-	<div class="col-md-5">
-		<h2 class="visible-xs">Demonstração</h2>
-		<div class="iphone">
-			<div id="iphone-carousel" class="carousel slide">
-				<ol class="carousel-indicators">
-					<li data-target="#iphone-carousel" data-slide-to="0" class="active"></li>
-					<li data-target="#iphone-carousel" data-slide-to="1"></li>
-					<li data-target="#iphone-carousel" data-slide-to="2"></li>
-					<li data-target="#iphone-carousel" data-slide-to="3"></li>
-				</ol>
-
-				<div class="carousel-inner">
-					<div class="item active">
-						<img src="{% static 'images/screenshots/map1.jpg' %}" alt="Stig" class="screen" />
-					</div>
-					<div class="item">
-						<img src="{% static 'images/screenshots/map2.jpg' %}" alt="Stig" class="screen" />
-					</div>
-					<div class="item">
-						<img src="{% static 'images/screenshots/place1.jpg' %}" alt="Stig" class="screen" />
-					</div>
-					<div class="item">
-						<img src="{% static 'images/screenshots/comment1.jpg' %}" alt="Stig" class="screen" />
-					</div>
-				</div>
-
-				<!--
-				<a class="left carousel-control" href="#iphone-carousel" data-slide="prev">
-				    <span class="icon-prev"></span>
-				</a>
-
-				<a class="right carousel-control" href="#iphone-carousel" data-slide="next">
-				    <span class="icon-next"></span>
-				</a>
-				-->
 			</div>
 		</div>
 	</div>
 </div>
+
+<div id="card-about">
+	<div class="container">
+		{% verbatim %}
+		<div id="comment" ng-controller="CommentCtrl">
+			<h2>Como funciona?</h2>
+			<p class="lead">O <span class="stig">Stig</span> te dá <strong>informações em tempo real</strong> sobre os locais para sair à noite, com comentários de pessoas como você! Assim, você pode saber informações sobre:</p>
+			
+			<div class="row comment-explanation">
+				<div class="col-md-2 col-sm-4 col-xs-6"><span class="sticker sticker-money"></span><br />Preço</div>
+				<div class="col-md-2 col-sm-4 col-xs-6"><span class="sticker sticker-queue"></span><br />Fila</div>
+				<div class="col-md-2 col-sm-4 col-xs-6"><span class="sticker sticker-accessibility"></span><br />Acessibilidade</div>
+				<div class="col-md-2 col-sm-4 col-xs-6"><span class="sticker sticker-food"></span><br />Bebida</div>
+				<div class="col-md-2 col-sm-4 col-xs-6"><span class="sticker sticker-music"></span><br />Música</div>
+				<div class="col-md-2 col-sm-4 col-xs-6"><span class="sticker sticker-people"></span><br />Pessoas</div>
+			</div>
+
+			<h3>Tipo assim:</h3>
+			<div class="row">
+				<div class="col-md-6">
+					<div class="well">
+						<div class="media">
+							<div class="pull-left">
+								<div class="media-object photo">
+									<img class="photo" src="{{comment.photo}}" alt="{{comment.name}}" onerror="avatarError(this);" />
+								</div>
+								<p class="comment-stickers">
+									<span ng-repeat="sticker in comment.stickers"><span class="sticker sticker-{{sticker.name}} sticker-{{sticker.modifier}}"></span></span>
+								</p>
+							</div>
+
+							<div class="media-body">
+								<h4 class="media-heading">{{comment.name}} &nbsp;&rsaquo;&nbsp; {{comment.place}}</h4>
+								<blockquote><p>{{comment.comment}}</p></blockquote>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		{% endverbatim %}
+	</div>
+</div>
+
+<div class="modal fade" id="take-action-modal" tabindex="-1" role="dialog">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h2 class="modal-title">O <span class="stig">Stig</span> está chegando!</h2>
+			</div>
+			<div class="modal-body">
+				<p>Em alguns dias, o <span class="stig">Stig</span> estará disponível para baixar. Deixe seu email abaixo e vamos te deixar por dentro do lançamento!</p>
+				<form action="#" role="form">
+					<div class="form-group">
+						<label for="take-action-email">Seu email</label>
+						<div class="input-group">
+							<span class="input-group-addon"><span class="glyphicon glyphicon-envelope"></span></span>
+							<input type="email" class="form-control input-lg" id="take-action-email" placeholder="joao@stigapp.co" />
+							<span class="input-group-btn"><button class="btn btn-primary btn-lg" type="button">Manda!</button></span>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>
+
 
 {% else %}
 <h1>Em breve!</h1>
@@ -133,5 +109,38 @@ function avatarError (image) {
 	image.src = "{% static 'images/no-avatar.jpg' %}";
 	// image.onerror = '';
 }
+
+function resizeCards () {
+	var cards = [
+		'home',
+		'about',
+	];
+
+	var windowHeight = $(window).height();
+	for (var i = cards.length - 1; i >= 0; i--) {
+		var cardHeigth = $('#card-' + cards[i]).height();
+
+		$('#card-' + cards[i]).css('min-height', 0);
+
+		var cardPadding = Math.max(0, (windowHeight - cardHeigth) / 2);
+		// $('#card-' + cards[i]).css('min-height', windowHeight);
+		// console.log(cardPadding);
+
+		$('#card-' + cards[i]).css('padding-top', cardPadding);
+		$('#card-' + cards[i]).css('padding-bottom', cardPadding);
+	};
+}
+
+function goToCard (card) {
+	$.scrollTo($('#card-' + card), 500);
+}
+
+$(document).ready(function () {
+	$(window).resize(function () {
+		resizeCards();
+	});
+
+	resizeCards();
+});
 </script>
 {% endblock %}
