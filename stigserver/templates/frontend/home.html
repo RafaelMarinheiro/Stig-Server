@@ -177,7 +177,6 @@
 		</div>
 	</div>
 </div>
-
 {% endblock %}
 
 {% block scripts %}
@@ -228,7 +227,8 @@ function saveContact () {
 	}
 	$.ajax('{% url 'home_save_contact' %}', {
 		data: {
-			email: email
+			email: email,
+			csrfmiddlewaretoken: '{{ csrf_token }}',
 		},
 		type: 'POST',
 		success: function (data, jqXHR) {
@@ -267,10 +267,6 @@ function saveContact () {
 			resetContactModal();
 		},
 		beforeSend: function (xhr, settings) {
-			if (!csrfSafeMethod(settings.type) && sameOrigin(settings.url)) {
-		       xhr.setRequestHeader("X-CSRFToken", csrftoken);
-		    }
-
 			$('#take-action-modal .first').fadeOut(fadeTime);
 			setTimeout(function () {
 				$('#take-action-modal .second').fadeIn(fadeTime);
