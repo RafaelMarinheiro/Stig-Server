@@ -37,7 +37,7 @@ def cached_response(request, response, ttl):
 		response = Response({}, status=status.HTTP_304_NOT_MODIFIED)
 
 	response['ETag'] = etag
-	response['Cache-Control'] = 'max-age=%s' % ttl
+	# response['Cache-Control'] = 'max-age=%s' % ttl
 
 	return response
 
