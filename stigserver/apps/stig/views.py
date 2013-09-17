@@ -30,13 +30,13 @@ def unicode_dict(data):
 	return key
 
 def cached_response(request, response, ttl):
-	data = response.data.copy()
-	etag = etag_for(unicode_dict(data))
+	# data = response.data.copy()
+	# etag = etag_for(unicode_dict(data))
 	
-	if etag == request.META.get('HTTP_IF_NONE_MATCH', None):
-		response = Response({}, status=status.HTTP_304_NOT_MODIFIED)
+	# if etag == request.META.get('HTTP_IF_NONE_MATCH', None):
+	# 	response = Response({}, status=status.HTTP_304_NOT_MODIFIED)
 
-	response['ETag'] = etag
+	# response['ETag'] = etag
 	# response['Cache-Control'] = 'max-age=%s' % ttl
 
 	return response
