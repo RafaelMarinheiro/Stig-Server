@@ -126,12 +126,13 @@ class Place(models.Model):
 	def get_sticker_relevance(self, is_sum=True):
 		stickers = Sticker.objects.all()
 		result = {}
+		valid_since = datetime.now() - timedelta(hours=12)
 		for sticker in stickers:
 			if is_sum:
-				res = PlaceSticker.objects.filter(sticker=sticker, comment__place=self).aggregate(modifier_sum=Sum('modifier'))['modifier_sum']
+				res = PlaceSticker.objects.filter(sticker=sticker, comment__place=self, comment__created_on__gte=valid_since).aggregate(modifier_sum=Sum('modifier'))['modifier_sum']
 			else:
 				try:
-					res = (PlaceSticker.objects.filter(sticker=sticker, comment__place=self, modifier=PlaceSticker.MODIFIER_GOOD).count()) / (PlaceSticker.objects.filter(sticker=sticker, comment__place=self).count())
+					res = (PlaceSticker.objects.filter(sticker=sticker, comment__place=self, modifier=PlaceSticker.MODIFIER_GOOD, comment__created_on__gte=valid_since).count()) / (PlaceSticker.objects.filter(sticker=sticker, comment__place=self, comment__created_on__gte=valid_since).count())
 				except ZeroDivisionError, e:
 					res = 0
 			if res is not None:
