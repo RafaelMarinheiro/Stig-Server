@@ -40,45 +40,16 @@ class ThumbsByMeField(serializers.Field):
 class RankingField(serializers.Field):
 	def to_native(self, obj):
 		ranking = obj.get_ranking()
-		social = 0
 
 		if self.context['view'].request.auth is not None:
 			# Social
 			user = self.context['view'].request.auth
+			valid_since = datetime.now() - timedelta(days=7)
 			# modifier_avg = PlaceSticker.objects.filter(comment__user__friends__pk=user.pk, comment__place=obj).aggregate(modifier_avg=Avg('modifier'))['modifier_avg']
-			stickers = Sticker.objects.all()
-			relevance = {}
-			for sticker in stickers:
-				try:
-					good = 0
-					bad = 0
-					for x in xrange(0,6):
-						valid_until = datetime.now() - timedelta(days=x)
-						valid_since = datetime.now() - timedelta(days=x+1)
-						good_local = PlaceSticker.objects.filter(comment__user__friends__pk=user.pk, sticker=sticker, comment__place=self, modifier=PlaceSticker.MODIFIER_GOOD, comment__created_on__gt=valid_since, comment__created_on__lte=valid_until).count()
-						bad_local = PlaceSticker.objects.filter(comment__user__friends__pk=user.pk, sticker=sticker, comment__place=self, modifier=PlaceSticker.MODIFIER_BAD, comment__created_on__gt=valid_since, comment__created_on__lte=valid_until).count()
-						good += good_local * math.exp(-((x/3.5)**2))
-						bad += bad_local * math.exp(-((x/3.5)**2))
-
-					res = (((good - bad) / (good + bad)) + 1) * 0.5
-				except ZeroDivisionError, e:
-					res = 0
-				if res is not None:
-					name_encoded = sticker.name.lower()
-					relevance[name_encoded] = res
-
-			sticker_weigths = {
-				'money': 0.125, # Money
-				'food': 0.15, # Food
-				'queue': 0.125, # Queue
-				'music': 0.25, # Music
-				'accessibility': 0.05, # Accessibility
-				'people': 0.3, # People
-			}
-
-			for key in relevance:
-				social += relevance[key] * sticker_weigths[key] * 1000
-
+			try:
+				modifier_avg = (PlaceSticker.objects.filter(comment__user__friends__pk=user.pk, comment__place=obj, modifier=PlaceSticker.MODIFIER_GOOD, comment__created_on__gt=valid_since).count() / float(PlaceSticker.objects.filter(comment__user__friends__pk=user.pk, comment__place=obj, comment__created_on__gt=valid_since).count()))
+			except ZeroDivisionError, e:
+				modifier_avg = 0
 
 			social = modifier_avg * 1000
 

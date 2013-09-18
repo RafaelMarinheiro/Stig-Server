@@ -7,6 +7,7 @@ from django.contrib.contenttypes import generic
 from django.db import transaction
 from django.db.models import signals
 from datetime import datetime, timedelta
+from django.core.cache import cache
 import math
 
 # Create your models here.
@@ -125,26 +126,29 @@ class Place(models.Model):
 		return u"%s" % self.name
 
 	def get_sticker_relevance(self):
-		stickers = Sticker.objects.all()
-		result = {}
-		for sticker in stickers:
-			try:
-				good = 0
-				bad = 0
-				for x in xrange(0,6):
-					valid_until = datetime.now() - timedelta(days=x)
-					valid_since = datetime.now() - timedelta(days=x+1)
-					good_local = PlaceSticker.objects.filter(sticker=sticker, comment__place=self, modifier=PlaceSticker.MODIFIER_GOOD, comment__created_on__gt=valid_since, comment__created_on__lte=valid_until).count()
-					bad_local = PlaceSticker.objects.filter(sticker=sticker, comment__place=self, modifier=PlaceSticker.MODIFIER_BAD, comment__created_on__gt=valid_since, comment__created_on__lte=valid_until).count()
-					good += good_local * math.exp(-((x/3.5)**2))
-					bad += bad_local * math.exp(-((x/3.5)**2))
+		result = cache.get('place-sticker-relevance-%d' % self.pk)
+		if not result:
+			stickers = Sticker.objects.all()
+			result = {}
+			for sticker in stickers:
+				try:
+					good = 0
+					bad = 0
+					for x in xrange(0,6):
+						valid_until = datetime.now() - timedelta(days=x)
+						valid_since = datetime.now() - timedelta(days=x+1)
+						good_local = PlaceSticker.objects.filter(sticker=sticker, comment__place=self, modifier=PlaceSticker.MODIFIER_GOOD, comment__created_on__gt=valid_since, comment__created_on__lte=valid_until).count()
+						bad_local = PlaceSticker.objects.filter(sticker=sticker, comment__place=self, modifier=PlaceSticker.MODIFIER_BAD, comment__created_on__gt=valid_since, comment__created_on__lte=valid_until).count()
+						good += good_local * math.exp(-((x/3.5)**2))
+						bad += bad_local * math.exp(-((x/3.5)**2))
 
-				res = (((good - bad) / (good + bad)) + 1) * 0.5
-			except ZeroDivisionError, e:
-				res = 0
-			if res is not None:
-				name_encoded = sticker.name.lower()
-				result[name_encoded] = res
+					res = (((good - bad) / (good + bad)) + 1) * 0.5
+				except ZeroDivisionError, e:
+					res = 0
+				if res is not None:
+					name_encoded = sticker.name.lower()
+					result[name_encoded] = res
+			cache.set('place-sticker-relevance-%d' % self.pk, result, 5 * 60) # 5 minutes caching
 		return result
 
 	def get_ranking(self):
