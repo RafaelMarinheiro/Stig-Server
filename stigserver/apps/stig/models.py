@@ -132,14 +132,14 @@ class Place(models.Model):
 			result = {}
 			for sticker in stickers:
 				valid_since = datetime.now() - timedelta(days=7)
-				
+
 				try:
-					query = PlaceSticker.objects.filter(sticker=sticker, comment__created_on__gt=valid_since, modifier=PlaceSticker.MODIFIER_GOOD).extra(select={'awesome_value': 'exp(-(power(( (EXTRACT (DAY FROM AGE(stig_comment.created_on)))/3.5), 2)))'})
+					query = PlaceSticker.objects.filter(sticker=sticker, comment__place=self, comment__created_on__gt=valid_since, modifier=PlaceSticker.MODIFIER_GOOD).extra(select={'awesome_value': 'exp(-(power(( (EXTRACT (DAY FROM AGE(stig_comment.created_on)))/3.5), 2)))'})
 					good = 0
 					for placesticker in query:
 						good += placesticker.awesome_value
 
-					query = PlaceSticker.objects.filter(sticker=sticker, comment__created_on__gt=valid_since, modifier=PlaceSticker.MODIFIER_BAD).extra(select={'awesome_value': 'exp(-(power(( (EXTRACT (DAY FROM AGE(stig_comment.created_on)))/3.5), 2)))'})
+					query = PlaceSticker.objects.filter(sticker=sticker, comment__place=self, comment__created_on__gt=valid_since, modifier=PlaceSticker.MODIFIER_BAD).extra(select={'awesome_value': 'exp(-(power(( (EXTRACT (DAY FROM AGE(stig_comment.created_on)))/3.5), 2)))'})
 					bad = 0
 					for placesticker in query:
 						bad += placesticker.awesome_value
