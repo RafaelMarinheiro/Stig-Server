@@ -7,6 +7,7 @@ from django.contrib.contenttypes import generic
 from django.db import transaction
 from django.db.models import signals
 from datetime import datetime, timedelta
+import math
 
 # Create your models here.
 class FacebookAccessToken(models.Model):
@@ -123,18 +124,24 @@ class Place(models.Model):
 	def __unicode__(self):
 		return u"%s" % self.name
 
-	def get_sticker_relevance(self, is_sum=True):
+	def get_sticker_relevance(self):
 		stickers = Sticker.objects.all()
 		result = {}
-		valid_since = datetime.now() - timedelta(hours=12)
 		for sticker in stickers:
-			if is_sum:
-				res = PlaceSticker.objects.filter(sticker=sticker, comment__place=self, comment__created_on__gte=valid_since).aggregate(modifier_sum=Sum('modifier'))['modifier_sum']
-			else:
-				try:
-					res = (PlaceSticker.objects.filter(sticker=sticker, comment__place=self, modifier=PlaceSticker.MODIFIER_GOOD, comment__created_on__gte=valid_since).count()) / (PlaceSticker.objects.filter(sticker=sticker, comment__place=self, comment__created_on__gte=valid_since).count())
-				except ZeroDivisionError, e:
-					res = 0
+			try:
+				good = 0
+				bad = 0
+				for x in xrange(0,6):
+					valid_until = datetime.now() - timedelta(days=x)
+					valid_since = datetime.now() - timedelta(days=x+1)
+					good_local = PlaceSticker.objects.filter(sticker=sticker, comment__place=self, modifier=PlaceSticker.MODIFIER_GOOD, comment__created_on__gt=valid_since, comment__created_on__lte=valid_until).count()
+					bad_local = PlaceSticker.objects.filter(sticker=sticker, comment__place=self, modifier=PlaceSticker.MODIFIER_BAD, comment__created_on__gt=valid_since, comment__created_on__lte=valid_until).count()
+					good += good_local * math.exp(-((x/3.5)**2))
+					bad += bad_local * math.exp(-((x/3.5)**2))
+
+				res = (((good - bad) / (good + bad)) + 1) * 0.5
+			except ZeroDivisionError, e:
+				res = 0
 			if res is not None:
 				name_encoded = sticker.name.lower()
 				result[name_encoded] = res
@@ -151,7 +158,7 @@ class Place(models.Model):
 			'people': 0.3, # People
 		}
 
-		relevance = self.get_sticker_relevance(is_sum=False)
+		relevance = self.get_sticker_relevance()
 		buzz = 0
 
 		for key in relevance:
