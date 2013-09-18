@@ -7,7 +7,7 @@ from django.contrib.contenttypes import generic
 from django.db import transaction
 from django.db.models import signals
 from datetime import datetime, timedelta
-from django.core.cache import cache
+# from django.core.cache import cache
 import math
 
 # Create your models here.
@@ -126,7 +126,8 @@ class Place(models.Model):
 		return u"%s" % self.name
 
 	def get_sticker_relevance(self):
-		result = cache.get('place-sticker-relevance-%d' % self.pk)
+		result = None
+		# result = cache.get('place-sticker-relevance-%d' % self.pk)
 		if not result:
 			stickers = Sticker.objects.all()
 			result = {}
@@ -148,7 +149,7 @@ class Place(models.Model):
 				if res is not None:
 					name_encoded = sticker.name.lower()
 					result[name_encoded] = res
-			cache.set('place-sticker-relevance-%d' % self.pk, result, 5 * 60) # 5 minutes caching
+			# cache.set('place-sticker-relevance-%d' % self.pk, result, 5 * 60) # 5 minutes caching
 		return result
 
 	def get_ranking(self):
