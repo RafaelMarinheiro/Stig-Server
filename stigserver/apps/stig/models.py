@@ -131,16 +131,18 @@ class Place(models.Model):
 			stickers = Sticker.objects.all()
 			result = {}
 			for sticker in stickers:
+				valid_since = datetime.now() - timedelta(days=7)
+				
 				try:
+					query = PlaceSticker.objects.filter(sticker=sticker, comment__created_on__gt=valid_since, modifier=PlaceSticker.MODIFIER_GOOD).extra(select={'awesome_value': 'exp(-(power(( (EXTRACT (DAY FROM AGE(stig_comment.created_on)))/3.5), 2)))'})
 					good = 0
+					for placesticker in query:
+						good += placesticker.awesome_value
+
+					query = PlaceSticker.objects.filter(sticker=sticker, comment__created_on__gt=valid_since, modifier=PlaceSticker.MODIFIER_BAD).extra(select={'awesome_value': 'exp(-(power(( (EXTRACT (DAY FROM AGE(stig_comment.created_on)))/3.5), 2)))'})
 					bad = 0
-					for x in xrange(0,6):
-						valid_until = datetime.now() - timedelta(days=x)
-						valid_since = datetime.now() - timedelta(days=x+1)
-						good_local = PlaceSticker.objects.filter(sticker=sticker, comment__place=self, modifier=PlaceSticker.MODIFIER_GOOD, comment__created_on__gt=valid_since, comment__created_on__lte=valid_until).count()
-						bad_local = PlaceSticker.objects.filter(sticker=sticker, comment__place=self, modifier=PlaceSticker.MODIFIER_BAD, comment__created_on__gt=valid_since, comment__created_on__lte=valid_until).count()
-						good += good_local * math.exp(-((x/3.5)**2))
-						bad += bad_local * math.exp(-((x/3.5)**2))
+					for placesticker in query:
+						bad += placesticker.awesome_value
 
 					res = (((good - bad) / (good + bad)) + 1) * 0.5
 				except ZeroDivisionError, e:
