@@ -125,7 +125,7 @@ class Place(models.Model):
 	def __unicode__(self):
 		return u"%s" % self.name
 
-	def get_sticker_relevance(self):
+	def get_sticker_relevance(self, always_positive=False):
 		result = cache.get('place-sticker-relevance-%d' % self.pk)
 		if not result:
 			stickers = Sticker.objects.all()
@@ -144,13 +144,17 @@ class Place(models.Model):
 					for placesticker in query:
 						bad += placesticker.awesome_value
 
-					res = (((good - bad) / (good + bad)) + 1) * 0.5
+					res = ((good - bad) / (good + bad))
 				except ZeroDivisionError, e:
 					res = 0
 				if res is not None:
 					name_encoded = sticker.name.lower()
 					result[name_encoded] = res
 			cache.set('place-sticker-relevance-%d' % self.pk, result, 5 * 60) # 5 minutes caching
+
+		if always_positive:
+			for k in result.keys():
+				result[k] = (result[k] + 1) * 0.5
 		return result
 
 	def get_ranking(self):
@@ -164,7 +168,7 @@ class Place(models.Model):
 			'people': 0.3, # People
 		}
 
-		relevance = self.get_sticker_relevance()
+		relevance = self.get_sticker_relevance(always_positive=True)
 		buzz = 0
 
 		for key in relevance:
