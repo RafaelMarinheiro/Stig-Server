@@ -154,7 +154,8 @@ class Place(models.Model):
 
 		if always_positive:
 			for k in result.keys():
-				result[k] = (result[k] + 1) * 0.5
+				if type(result[k]) != int:
+					result[k] = (result[k] + 1) * 0.5
 		return result
 
 	def get_ranking(self):
