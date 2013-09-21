@@ -13,8 +13,8 @@ urlpatterns = patterns('',
     url(r'^home_save_contact/$', 'stigserver.apps.frontend.views.home_save_contact', name='home_save_contact'),
 )
 
-from stigserver.settings import settings
+# from stigserver.settings import settings
 
-urlpatterns += patterns('',
-    (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
-)
+# urlpatterns += patterns('',
+#     (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
+# )
