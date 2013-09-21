@@ -10,3 +10,6 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Allow all host headers
 ALLOWED_HOSTS = ['*']
+
+DEBUG = bool(os.environ['DJANGO_DEBUG'])
+TEMPLATE_DEBUG = DEBUG
