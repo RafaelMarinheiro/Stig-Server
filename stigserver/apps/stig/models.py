@@ -134,23 +134,29 @@ class Place(models.Model):
 				valid_since = datetime.now() - timedelta(days=7)
 
 				try:
+					total = 0
+
 					query = PlaceSticker.objects.filter(sticker=sticker, comment__place=self, comment__created_on__gt=valid_since, modifier=PlaceSticker.MODIFIER_GOOD).extra(select={'awesome_value': 'exp(-(power(( (EXTRACT (DAY FROM AGE(stig_comment.created_on)))/3.5), 2)))'})
+					total += query.count()
+
 					good = 0
 					for placesticker in query:
 						good += placesticker.awesome_value
 
 					query = PlaceSticker.objects.filter(sticker=sticker, comment__place=self, comment__created_on__gt=valid_since, modifier=PlaceSticker.MODIFIER_BAD).extra(select={'awesome_value': 'exp(-(power(( (EXTRACT (DAY FROM AGE(stig_comment.created_on)))/3.5), 2)))'})
+					total += query.count()
+
 					bad = 0
 					for placesticker in query:
 						bad += placesticker.awesome_value
 
-					res = ((good - bad) / (good + bad))
+					res = ((good - bad) / total)
 				except ZeroDivisionError, e:
 					res = 0
 				if res is not None:
 					name_encoded = sticker.name.lower()
 					result[name_encoded] = res
-			cache.set('place-sticker-relevance-%d' % self.pk, result, 5 * 60) # 5 minutes caching
+			cache.set('place-sticker-relevance-%d' % self.pk, result, 3 * 60) # 3 minutes caching
 
 		if always_positive:
 			for k in result.keys():
