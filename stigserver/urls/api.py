@@ -27,3 +27,9 @@ urlpatterns = patterns('',
     url(r'^places/(?P<place_pk>\d+)/checkin/$', views.CheckinAtPlace.as_view(), name='checkinatplace'),
     url(r'^users/(?P<user_pk>\d+)/checkins/$', views.CheckinsForUser.as_view(), name='checkinsforuser-list'),
 )
+
+from stigserver.settings import settings
+
+urlpatterns += patterns('',
+    (r'^static/(?P.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
+)
