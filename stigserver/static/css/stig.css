@@ -166,7 +166,7 @@ div.comment-explanation .sticker {
 	div.iphone {
 		transform: scale(0.8);
 		-ms-transform: scale(0.8); /* IE 9 */
-		-webkit-transform: scale(0.8); /* Safari and Chrome */
+		-webkit-transform: scale(0.65); /* Safari and Chrome */
 	}
 
 	div.team-member .thumbnail {
