@@ -105,12 +105,12 @@ def home(request):
 			'position': 'Designer',
 			'fb_id': 'thomas.soares2',
 		},
-		{
-			'name': "Camila Marinheiro",
-			'photo': 'camila.jpg',
-			'position': 'Divulgação',
-			'fb_id': 'milamarinheiro',
-		},
+		# {
+		# 	'name': "Camila Marinheiro",
+		# 	'photo': 'camila.jpg',
+		# 	'position': 'Divulgação',
+		# 	'fb_id': 'milamarinheiro',
+		# },
 	]
 	return render(request, 'frontend/home.html', context)
 
