@@ -1,3 +1,5 @@
+#-*-encoding: utf8-*-
+
 from django.shortcuts import render, redirect, HttpResponse
 from stigserver.apps.stig.models import Comment
 from django.utils import simplejson
@@ -11,6 +13,105 @@ def home(request):
 	# if not request.user.is_authenticated():
 	# 	return redirect('http://fb.com/stigapp')
 	context = {}
+
+	context['team_members'] = [
+		{
+			'name': 'Rafael Nunes',
+			'photo': 'rafael-nunes.jpg',
+			'position': 'Gerente Geral',
+			'fb_id': 'peaonunes',
+		},
+		{
+			'name': 'Rafael Marinheiro',
+			'photo': 'rafael-marinheiro.jpg',
+			'position': 'Gerente de Desenvolvimento',
+			'fb_id': 'rafaelmarinheiro',
+		},
+		{
+			'name': 'Fanny Chien',
+			'photo': 'fanny.jpg',
+			'position': 'Gerente de Usabilidade',
+			'fb_id': 'fannychien93',
+		},
+		{
+			'name': 'Alexandre Cisneiros',
+			'photo': 'alexandre.jpg',
+			'position': 'Desenvolvedor',
+			'fb_id': 'Cisneiros',
+		},
+		{
+			'name': 'Arthur Braga',
+			'photo': 'arthur.jpg',
+			'position': 'Designer',
+			'fb_id': 'arthurbraga22',
+		},
+		{
+			'name': 'Cecília Eloy',
+			'photo': 'cecilia.jpg',
+			'position': 'Designer',
+			'fb_id': 'cecilia.eloy',
+		},
+		{
+			'name': 'Diego Rodriges',
+			'photo': 'diego.jpg',
+			'position': 'Desginer',
+			'fb_id': 'diego.rodrigues.5437923',
+		},
+		{
+			'name': 'Gustavo Stor',
+			'photo': 'gustavo.jpg',
+			'position': 'Desenvolvedor',
+			'fb_id': 'gstor',
+		},
+		{
+			'name': 'Lucas Fernandes',
+			'photo': 'lucas-fernandes.jpg',
+			'position': 'Designer',
+			'fb_id': 'lucas.fernandescorreia',
+		},
+		{
+			'name': 'Lucas Tenório',
+			'photo': 'lucas-tenorio.jpg',
+			'position': 'Desenvolvedor',
+			'fb_id': 'lucasvtenorio',
+		},
+		{
+			'name': 'Luiz Vasconselos',
+			'photo': 'luiz.jpg',
+			'position': 'Desenvolvedor',
+			'fb_id': 'luiz.vasconcelos.58',
+		},
+		{
+			'name': 'Pedro Diniz',
+			'photo': 'pedro.jpg',
+			'position': 'Desenvolvedor',
+			'fb_id': 'PedroHRDiniz32',
+		},
+		{
+			'name': 'Pollyana Diniz',
+			'photo': 'pollyana.jpg',
+			'position': 'Administradora',
+			'fb_id': 'dinizpollyanna',
+		},
+		{
+			'name': "Raphael D'Emery",
+			'photo': 'raphael.jpg',
+			'position': 'Turismólogo',
+			'fb_id': 'raphael.demery',
+		},
+		{
+			'name': "Thomás Soares",
+			'photo': 'thomas.jpg',
+			'position': 'Designer',
+			'fb_id': 'thomas.soares2',
+		},
+		{
+			'name': "Camila Marinheiro",
+			'photo': 'camila.jpg',
+			'position': 'Divulgação',
+			'fb_id': 'milamarinheiro',
+		},
+	]
 	return render(request, 'frontend/home.html', context)
 
 def home_comment(request):

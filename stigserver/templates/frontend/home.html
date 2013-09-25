@@ -19,23 +19,32 @@
 			<ul class="nav navbar-nav">
 				<li class="active"><a href="#card-home" onclick="goToCard('home'); return false;">Início</a></li>
 				<li><a href="#card-about" onclick="goToCard('about'); return false;">Como funciona</a></li>
+				<li><a href="#card-team" onclick="goToCard('team'); return false;">Equipe</a></li>
 				<li><a href="#card-contact" onclick="goToCard('contact'); return false;">Contato</a></li>
 			</ul>
 		</div>
 	</div>
 </nav>
 
-<div id="card-home">
+<div id="card-home" class="card-type-a">
 	<div class="container">
 		<div class="row">
 			<div class="col-md-7">
 				<h1 style="display: none;">Stig</h1>
 				<p class="sr-only">Saia para o lugar certo!</p>
-				<img src="{% static 'images/stig-logo.png' %}" alt="Stig" class="img-responsive" />
+				<img src="{% static 'images/stig-logo-white.png' %}" alt="Stig" class="img-responsive" />
 
 				<div id="take-action">
 					<p class="lead">Que tal sair sempre para o lugar certo? Saber sobre <strong>filas</strong>, <strong>preços</strong>, e mais? O <span class="stig">Stig</span> te ajuda!</p>
-					<p><button type="button" class="btn btn-primary btn-lg" data-toggle="modal" href="#take-action-modal" onclick="trackIWant();">Eu quero!</button> &nbsp; <button type="button" class="btn btn-default btn-lg" onclick="goToCard('about');">Saiba mais</button> &nbsp; <button type="button" class="btn btn-default btn-lg" onclick="goToCard('contact');">Entre em contato</button></p>
+
+					<div class="row" style="margin-bottom: 40px;">
+						<div class="col-sm-9">
+							<button type="button" class="btn btn-default btn-lg" data-toggle="modal" href="#take-action-modal" onclick="trackIWant();"><strong>Eu quero!</strong></button>
+						</div>
+						<div class="col-sm-3">
+							<button type="button" class="btn btn-inverse btn-md" onclick="goToCard('about');">Saiba mais</button><!--  &nbsp; <button type="button" class="btn btn-inverse btn-md" onclick="goToCard('contact');">Entre em contato</button> -->
+						</div>
+					</div>
 
 					
 					<div class="fb-like" data-colorscheme="light" data-href="https://www.facebook.com/stigapp" data-width="300" data-show-faces="true" data-send="false"></div>
@@ -43,7 +52,7 @@
 				</div>
 			</div>
 			<div class="col-md-5">
-				<h2 class="visible-sm">Demonstração</h2>
+				<h2 class="hidden-md hidden-lg">Demonstração</h2>
 				<div class="iphone">
 					<div id="iphone-carousel" class="carousel slide">
 						<ol class="carousel-indicators">
@@ -92,7 +101,7 @@
 	</div>
 </div>
 
-<div id="card-about">
+<div id="card-about" class="card-type-b">
 	<div class="container">
 		{% verbatim %}
 		<div id="comment" ng-controller="CommentCtrl">
@@ -136,11 +145,30 @@
 	</div>
 </div>
 
-<div id="card-contact">
+<div id="card-team" class="card-type-a">
+	<div class="container">
+		<h2>Quem faz o <span class="stig">Stig</span>?</h2>
+		<p class="lead">Esse pessoal vai fazer com que você <strong>saia para o lugar certo</strong>!</p>
+		<div class="row">
+			{% for member in team_members %}
+			<div class="team-member col-md-3 col-sm-4 col-xs-6">
+				<div class="thumbnail" style="position: relative">
+					<img src="{% static 'images/team-photos/'|add:member.photo %}" alt="{{ member.name }}" />
+					<h3>{{ member.name }}</h3>
+					<p>{{ member.position }}</p>
+					<a class="btn btn-primary btn-block" style="position: absolute; bottom: 0; left: 0" href="http://fb.com/{{ member.fb_id }}" target="_blank">Facebook</a>
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+	</div>
+</div>
+
+<div id="card-contact" class="card-type-b">
 	<div class="container">
 		<h2>Entre em contato!</h2>
 		<p class="lead">Quer conversar com a galera que faz o <span class="stig">Stig</span>? Manda um email para a gente!</p>
-		<p><a href="mailto:contact@stigapp.co" class="btn btn-primary btn-lg"><span class="glyphicon glyphicon-envelope"></span> contact@stigapp.co</a></p>
+		<p><a href="mailto:contact@stigapp.co" class="btn btn-default btn-lg"><span class="glyphicon glyphicon-envelope"></span> contact@stigapp.co</a></p>
 	</div>
 </div>
 
@@ -160,7 +188,7 @@
 							<div class="input-group">
 								<span class="input-group-addon"><span class="glyphicon glyphicon-envelope"></span></span>
 								<input type="email" class="form-control input-lg" id="take-action-email" placeholder="joao@stigapp.co" required="required" />
-								<span class="input-group-btn"><input type="submit" class="btn btn-primary btn-lg" value="Manda" /></span>
+								<span class="input-group-btn"><input type="submit" class="btn btn-default btn-lg" value="Manda" /></span>
 							</div>
 						</div>
 					</form>
@@ -171,7 +199,7 @@
 				<div class="third">
 					<p class="lead"><strong>Pronto!</strong> Assim que tivermos novidades do <span class="stig">Stig</span>, você será o primeiro a saber.</p>
 
-					<button type="button" class="btn btn-primary" onclick="resetContactModal();">Cadastrar outro email</button>
+					<button type="button" class="btn btn-default" onclick="resetContactModal();">Cadastrar outro email</button>
 				</div>
 			</div>
 		</div>
@@ -279,6 +307,7 @@ function saveContact () {
 var cards = [
 	'home',
 	'about',
+	'team',
 	'contact',
 ];
 

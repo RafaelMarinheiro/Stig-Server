@@ -1,5 +1,3 @@
-# Create your views here.
-
 from rest_framework import viewsets, generics, permissions, authentication, status, mixins
 from serializers import UserSerializer, PlaceSerializer, CommentSerializer, CheckinSerializer
 from models import StigUser, Place, Sticker, Comment, Checkin, Thumb

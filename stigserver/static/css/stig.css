@@ -1,5 +1,5 @@
 body {
-	background-color: #fdfdfd;
+	background-color: #ffce18;
 }
 
 h1.logo {
@@ -106,6 +106,10 @@ span.stig {
 	color: #ffce18;
 }
 
+.card-type-a span.stig {
+	color: #fff;
+}
+
 #take-action {
 	margin-top: 60px;
 }
@@ -121,14 +125,14 @@ div.comment-explanation .sticker {
 	font-size: 1.6em;
 }
 
-#card-about {
+.card-type-b {
 	/*background: #ddd;*/
 	background: rgb(51,51,51);
 	color: #ddd;
 }
 
-#card-home, #card-contact {
-	/*background: rgb(51,51,51);*/
+.card-type-a {
+	background: #ffce18;
 	/*color: #fff;*/
 }
 
@@ -156,4 +160,24 @@ div.comment-explanation .sticker {
 
 #top-navigation li.active a {
 	/*background: rgba(247, 247, 247, 0.93);*/
+}
+
+@media (max-width: 480px) {
+	div.iphone {
+		transform: scale(0.8);
+		-ms-transform: scale(0.8); /* IE 9 */
+		-webkit-transform: scale(0.8); /* Safari and Chrome */
+	}
+
+	div.team-member .thumbnail {
+		height: 350px !important;
+	}
+}
+
+div.team-member {
+	margin-bottom: 30px;
+}
+
+div.team-member .thumbnail {
+	height: 400px;
 }
