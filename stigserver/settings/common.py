@@ -103,6 +103,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'subdomains.middleware.SubdomainURLRoutingMiddleware',
+    'stigserver.middleware.crossdomainxhr.XsSharing',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
@@ -234,3 +235,7 @@ GOOGLE_ANALYTICS_MODEL = True
 from memcacheify import memcacheify
 
 CACHES = memcacheify()
+
+XS_SHARING_ALLOWED_ORIGINS = ['http://localhost:8000', 'http://m.stigapp.co']
+
+XS_SHARING_ALLOWED_METHODS = ['POST','GET','OPTIONS', 'PUT', 'DELETE']
