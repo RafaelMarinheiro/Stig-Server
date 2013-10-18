@@ -5,6 +5,7 @@ from rest_framework.parsers import JSONParser
 from rest_framework.reverse import reverse
 from django.contrib.gis.geos import Point
 from django.db.models import Avg
+import datetime
 
 class GeoPointField(serializers.WritableField):
 	def to_native(self, obj):
