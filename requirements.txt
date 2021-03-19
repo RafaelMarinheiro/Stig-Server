@@ -12,7 +12,7 @@ django-pylibmc-sasl==0.2.4
 django-subdomains==2.0.4
 django-tastypie==0.10.0
 django-toolbelt==0.0.1
-djangorestframework==2.3.6
+djangorestframework==3.11.2
 gunicorn==17.5
 psycopg2==2.5.1
 pylibmc==1.2.3
